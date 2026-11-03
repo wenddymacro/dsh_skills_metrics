@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "该用哪种 DID",
+    "description": "添加一个技能：用 Stata 命令 whichdidshouldiuse 判断面板数据属于哪种双重差分设计（CLA、SAD、HAD、SFSD），并推荐合适的估计量。需要 Stata 16 及以上版本。"
+  }
+}
