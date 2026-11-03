@@ -7,6 +7,10 @@
 
 它只**分类**，不**估计**。
 
+**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装到读懂结果，附 DeepSeek Harness 桌面版实测截图）
+
+![提问后得到的结论](docs/images/11-answer-conclusion.jpg)
+
 ## 依赖
 
 - DeepSeek Harness ≥ 0.2.1-rc.1
@@ -18,10 +22,16 @@
 
 ## 安装
 
-从本仓库安装（子目录安装，`<commit>` 换成要安装的提交）：
+**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`<commit>` 换成要安装的提交号。每一步的截图见 [使用指南](docs/GUIDE.md)。
+
+```text
+github:wenddymacro/dsh_skills_metrics#<commit>&path:/whichdidshouldiuse
+```
+
+**命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "git+https://github.com/wenddymacro/dsh_skills_metrics.git#<commit>&path:/whichdidshouldiuse"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/whichdidshouldiuse"
 ```
 
 从本地 checkout 安装（便于开发）：
@@ -30,7 +40,7 @@ dsh plugin --profile <profile> add "git+https://github.com/wenddymacro/dsh_skill
 dsh plugin --profile <profile> add "link:/abs/path/to/dsh_skills_metrics/whichdidshouldiuse"
 ```
 
-Desktop app 的 profile 由 app 自己管理，请在 app 的**插件**页面里，从本地目录或 Git 地址安装。
+如果把已安装的插件换成另一个来源或版本，需要重启 DeepSeek Harness，新代码才会生效。
 
 ## 使用
 
