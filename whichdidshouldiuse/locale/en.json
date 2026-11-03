@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Which DID should I use",
+    "description": "Adds a skill that classifies a panel's difference-in-differences design (CLA, SAD, HAD, SFSD) with the whichdidshouldiuse Stata command and recommends an estimator. Requires Stata 16 or later."
+  }
+}

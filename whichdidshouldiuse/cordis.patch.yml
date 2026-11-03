@@ -1,0 +1,5 @@
+# Mount this package's plugin, which exposes skills/which-did-should-i-use to every session.
+# No path or config here: index.js locates skills/ from its own module URL.
+- insert:
+    - id: whichdidshouldiuse-skill
+      name: '@dsh-skills-metrics/whichdidshouldiuse'
