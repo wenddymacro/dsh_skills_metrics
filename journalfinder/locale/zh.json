@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "期刊推荐",
+    "description": "添加一个技能：根据论文题目、摘要、关键词或整篇稿件（PDF / Word），从 5,183 本 JCR SSCI/AHCI 期刊中推荐投稿期刊，标注 JCR 分区、中科院分区、影响因子、FT50、UTD24、ABS（AJG 2024）、APC 和审稿周期。需要 Python 3.10 及以上版本。"
+  }
+}

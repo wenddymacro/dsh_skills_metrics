@@ -1,0 +1,34 @@
+Minimum Wages and Youth Employment: Evidence from Chinese Counties
+
+Abstract
+This paper studies how minimum wage increases affect the employment of young workers in China. Exploiting staggered county-level minimum wage adjustments between 2004 and 2018, we estimate difference-in-differences and event-study models on a county panel built from the China Labor-force Dynamics Survey and administrative wage records. A 10 percent increase in the minimum wage reduces employment among workers aged 16 to 24 by 1.2 percent, with larger effects in labor-intensive manufacturing and in less developed inland provinces. Hours and informal employment absorb part of the adjustment. The results inform the debate on minimum wage policy in developing labor markets.
+
+Keywords: minimum wage; youth employment; labor market; informal employment
+JEL: J23, J31, J38
+
+1. Introduction
+Minimum wage policy remains one of the most debated labor market institutions. Early studies of the United States found small or no disemployment effects, while later work using longer panels and new designs reached mixed conclusions. Evidence from developing economies, where informal employment is widespread and enforcement is uneven, is far thinner. China offers a useful setting because minimum wages are set locally and adjusted at different times across counties.
+
+2. Institutional Background
+Chinese provinces set minimum wage tiers and counties are assigned to tiers. Adjustments occur every two to three years and are staggered across provinces, which provides variation in treatment timing.
+
+3. Data
+We combine the China Labor-force Dynamics Survey with county statistical yearbooks. The sample covers 1,850 counties observed annually between 2004 and 2018.
+
+4. Empirical Strategy
+We estimate a two-way fixed effects difference-in-differences model and heterogeneity-robust event-study estimators that allow treatment effects to vary across adoption cohorts.
+
+5. Results
+Youth employment falls after minimum wage increases. Pre-trends are flat. Effects are concentrated in labor-intensive manufacturing and inland provinces. Hours fall and informal employment rises.
+
+6. Robustness
+Results are robust to alternative control groups, to dropping provincial capitals, and to controlling for local labor demand shocks.
+
+7. Conclusion
+Minimum wage increases reduce youth employment in China, and part of the adjustment occurs through hours and informality.
+
+References
+Card, D. and Krueger, A. (1994). Minimum wages and employment. American Economic Review, 84(4), 772-793.
+Neumark, D. and Wascher, W. (2008). Minimum Wages. MIT Press.
+Cengiz, D., Dube, A., Lindner, A. and Zipperer, B. (2019). The effect of minimum wages on low-wage jobs. Quarterly Journal of Economics, 134(3), 1405-1454.
+Callaway, B. and Sant'Anna, P. (2021). Difference-in-differences with multiple time periods. Journal of Econometrics, 225(2), 200-230.

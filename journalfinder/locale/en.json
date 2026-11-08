@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Journal Finder",
+    "description": "Adds a skill that recommends journals to submit a social-science or humanities paper to, from its title, abstract, keywords or a PDF/Word manuscript. Matches against 5,183 JCR SSCI/AHCI journals and shows JCR/CAS quartiles, impact factor, FT50, UTD24, ABS (AJG 2024), APC and review time. Requires Python 3.10 or later."
+  }
+}

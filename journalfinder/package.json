@@ -1,0 +1,39 @@
+{
+  "name": "@dsh-skills-metrics/journalfinder",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DSH skill that recommends submission journals for a social-science or humanities paper (title, abstract, keywords or a PDF/Word manuscript) from a local database of 5,183 JCR SSCI/AHCI journals, with JCR/CAS quartiles, FT50, UTD24 and ABS (AJG 2024) annotations.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",
+    "directory": "journalfinder"
+  },
+  "icon": "./icon.svg",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "skills"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.1"
+  },
+  "scripts": {
+    "test": "node --test test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
