@@ -6,6 +6,10 @@
 
 它只做**投稿候选推荐**，不预测录用，也不改稿。
 
+**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装到读懂推荐结果，附示例稿件和实测输出）
+
+![推荐报告](docs/images/03-report.png)
+
 ## 功能
 
 - 输入可以是题目、摘要、关键词，也可以是整篇稿件（PDF / Word / TXT）：自动提取标题、摘要、关键词、JEL、正文字数、研究方法、数据来源、文章类型，并检查期刊字数限制
@@ -23,7 +27,7 @@
 ## 安装
 
 **桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`<commit>` 换成要安装的提交号。
-具体操作与 [whichdidshouldiuse 的图文指南](../whichdidshouldiuse/docs/GUIDE.md) 相同，只是地址末尾的路径换成 `/journalfinder`。
+每一步的截图见 [使用指南](docs/GUIDE.md)。
 
 ```text
 github:wenddymacro/dsh_skills_metrics#<commit>&path:/journalfinder
@@ -71,6 +75,7 @@ journalfinder/
 ├── index.js                # 用 dsh 自带的 skill-filesystem provider 挂载 skills/
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
+├── docs/                   # 图文使用指南、示例稿件、配图
 ├── skills/find-journal/
 │   ├── SKILL.md            # agent 的工作流程、参数速查与报告格式
 │   ├── scripts/            # query_db.py、parse_manuscript.py、runtime_paths.py
