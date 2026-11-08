@@ -6,9 +6,9 @@
 
 它只做**投稿候选推荐**，不预测录用，也不改稿。
 
-**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装到读懂推荐结果，附示例稿件和实测输出）
+**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装到读懂推荐结果，附 DeepSeek Harness 桌面版实测截图）
 
-![推荐报告](docs/images/03-report.png)
+![推荐期刊表](docs/images/11-table.jpg)
 
 ## 功能
 
