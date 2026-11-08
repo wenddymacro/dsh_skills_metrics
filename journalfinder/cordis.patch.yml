@@ -1,0 +1,5 @@
+# Mount this package's plugin, which exposes skills/find-journal to every session.
+# No path or config here: index.js locates skills/ from its own module URL.
+- insert:
+    - id: journalfinder-skill
+      name: '@dsh-skills-metrics/journalfinder'
