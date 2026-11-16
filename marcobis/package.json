@@ -1,0 +1,42 @@
+{
+  "name": "@dsh-skills-metrics/marcobis",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DSH 插件：把 BIS 的 MaRCo@BIS 宏观计量研究助手（七阶段人机协同工作流、VAR/BVAR/LP/SVAR 等参考实现、经典论文复现库）装进 DeepSeek Harness，并新增国家统计局月度、季度、年度数据层（自动下载、拼接分段表、累计值转当期值、定基指数链接）。",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",
+    "directory": "marcobis"
+  },
+  "icon": "./icon.svg",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "skills",
+    "framework",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.1"
+  },
+  "scripts": {
+    "test": "node --test test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

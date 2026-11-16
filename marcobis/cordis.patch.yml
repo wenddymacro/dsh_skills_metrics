@@ -1,0 +1,5 @@
+# 挂载本插件：把 skills/marco-bis 和 skills/nbs-data 加入每个会话的 skill 目录。
+# 这里不写任何路径或配置：index.js 根据自身模块 URL 定位 skills/。
+- insert:
+    - id: marcobis-skill
+      name: '@dsh-skills-metrics/marcobis'

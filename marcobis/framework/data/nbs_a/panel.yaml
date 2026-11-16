@@ -1,0 +1,398 @@
+# 国家统计局年度宏观面板（nbs_a）的定义。字段说明见 data/nbs_m/panel.yaml。
+# 日期约定：当年 1 月 1 日。clean 只用 none（年度数据没有累计值换算）。
+# 指标键一定要加引号；编码在表内重复的指标（如各种"上年=100"指数）用显示名。
+
+id: nbs_a
+freq: A
+name: 国家统计局年度宏观面板
+source: 国家统计局 国家数据 https://data.stats.gov.cn/
+area: 全国
+
+series:
+  # ---------------- 国民经济核算（生产法） ----------------
+  - id: gdp
+    label: 国内生产总值（现价）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值
+    key: 'db8e5a86c08246e79b1b11251927e740_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gni
+    label: 国民总收入（现价）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值
+    key: '9458ab3319b94c029cd9baa2fc6c2ba5_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_primary
+    label: 第一产业增加值（现价）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值
+    key: '106020100003_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_secondary
+    label: 第二产业增加值（现价）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值
+    key: '106020100002_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_tertiary
+    label: 第三产业增加值（现价）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值
+    key: '106020100001_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_pc
+    label: 人均国内生产总值（现价）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值
+    key: 'ec3de3099fe9432e94fafa1f2460a047_1'
+    unit: 元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_index
+    label: 国内生产总值指数（上年=100）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值指数/国内生产总值指数 (上年=100)
+    key: '国内生产总值指数 (上年=100)'
+    unit: 上年=100
+    clean: none
+    tcode: 1
+    sa: false
+
+  # ---------------- 国民经济核算（支出法） ----------------
+  - id: gdp_exp
+    label: 支出法国内生产总值
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: 'efa0ae05cdc044aab3328c9a69d72e9a_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: consumption
+    label: 最终消费支出
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '8d2b5de258684f12b836ab08f65267b2_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: hh_consumption
+    label: 居民消费支出
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '123610100005_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gov_consumption
+    label: 政府消费支出
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '123610100006_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: capital_formation
+    label: 资本形成总额
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '95a1240c1e204aa194125fcf69ff18fa_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gfcf
+    label: 固定资本形成总额
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '123610100009_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: inventory_change
+    label: 存货变动
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '123610100010_1'
+    unit: 亿元
+    clean: none
+    tcode: 1
+    sa: false
+  - id: net_exports
+    label: 货物和服务净出口
+    group: 支出
+    catalog: 国民经济核算/支出法国内生产总值
+    key: '209842ecf3de41478e0ec6587a37605d_1'
+    unit: 亿元
+    clean: none
+    tcode: 1
+    sa: false
+
+  # ---------------- 人口与就业 ----------------
+  - id: population
+    label: 年末总人口
+    group: 人口
+    catalog: 人口/总人口
+    key: 'fd645f085ac24732b78f2bc009206806_1'
+    unit: 万人
+    clean: none
+    tcode: 5
+    sa: false
+  - id: urban_population
+    label: 城镇人口
+    group: 人口
+    catalog: 人口/总人口
+    key: '106320100002_1'
+    unit: 万人
+    clean: none
+    tcode: 5
+    sa: false
+  - id: employment
+    label: 就业人员
+    group: 就业
+    catalog: 就业人员和工资/按三次产业分就业人员数
+    key: '24e1c38aaf494b17ac5c9e7e2e42bad6_1'
+    unit: 万人
+    clean: none
+    tcode: 5
+    sa: false
+  - id: registered_unemployment
+    label: 城镇登记失业率
+    group: 就业
+    catalog: 就业人员和工资/城镇登记失业人员及失业率
+    key: '106320100002_1'
+    unit: '%'
+    clean: none
+    tcode: 2
+    sa: false
+  - id: avg_wage
+    label: 城镇非私营单位就业人员平均工资
+    group: 就业
+    catalog: 就业人员和工资/城镇非私营单位就业人员平均工资和指数
+    key: '116500202106_1'
+    unit: 元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: real_wage_index
+    label: 城镇非私营单位就业人员平均实际工资指数（上年=100）
+    group: 就业
+    catalog: 就业人员和工资/城镇非私营单位就业人员平均工资和指数
+    key: '城镇非私营单位就业人员平均实际工资指数 (上年=100)'
+    unit: 上年=100
+    clean: none
+    tcode: 1
+    sa: false
+
+  # ---------------- 价格 ----------------
+  - id: cpi_yoy
+    label: 居民消费价格指数（上年=100）
+    group: 价格
+    catalog: 价格指数/各种价格指数
+    key: '居民消费价格指数 (上年=100)'
+    unit: 上年=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: ppi_yoy
+    label: 工业生产者出厂价格指数（上年=100）
+    group: 价格
+    catalog: 价格指数/各种价格指数
+    key: '工业生产者出厂价格指数 (上年=100)'
+    unit: 上年=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: fai_price_yoy
+    label: 固定资产投资价格指数（上年=100）
+    group: 价格
+    catalog: 价格指数/各种价格指数
+    key: '固定资产投资价格指数 (上年=100)'
+    unit: 上年=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: cpi_1978
+    label: 居民消费价格定基指数（1978=100，官方）
+    group: 价格
+    catalog: 价格指数/各种价格定基指数
+    key: '居民消费价格指数 (1978=100)'
+    unit: 1978=100
+    clean: none
+    tcode: 5
+    sa: false
+  - id: ppi_1985
+    label: 工业生产者出厂价格定基指数（1985=100，官方）
+    group: 价格
+    catalog: 价格指数/各种价格定基指数
+    key: '6021702000018_1'
+    unit: 1985=100
+    clean: none
+    tcode: 5
+    sa: false
+
+  # ---------------- 财政、外贸、金融、投资 ----------------
+  - id: fiscal_revenue
+    label: 一般公共预算收入
+    group: 财政
+    catalog: 财政/一般公共预算收支总额及增长速度
+    key: '895b04cc5a8b4c6d9f771c7de995f8af_21'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: fiscal_expenditure
+    label: 一般公共预算支出
+    group: 财政
+    catalog: 财政/一般公共预算收支总额及增长速度
+    key: '81e3e9710c06441999390e78dfc5e84a_21'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: exports_cny
+    label: 出口总额（人民币）
+    group: 外贸
+    catalog: 对外经济贸易/货物进出口总额
+    key: '53f929c416c0433b89aab71400aafbfe_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: imports_cny
+    label: 进口总额（人民币）
+    group: 外贸
+    catalog: 对外经济贸易/货物进出口总额
+    key: '3375269ade0344bfa5f14366e26c16bf_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: exports_usd
+    label: 出口总额（美元）
+    group: 外贸
+    catalog: 对外经济贸易/货物进出口总额
+    key: 'b92700c6d4ba4eb4a173ec34f6dfde62_1'
+    unit: 百万美元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: imports_usd
+    label: 进口总额（美元）
+    group: 外贸
+    catalog: 对外经济贸易/货物进出口总额
+    key: '9a217af735814896a45325facca87f24_1'
+    unit: 百万美元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: usdcny
+    label: 人民币对美元汇率（年平均价，100 美元合人民币）
+    group: 外贸
+    catalog: 对外经济贸易/人民币汇率 (年平均价)
+    key: 'b2a564412b6a4bf489f9db4b1ad5b0a6_1'
+    unit: 元/100 美元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: m2
+    label: 货币和准货币（M2）供应量
+    group: 货币
+    catalog: 金融业/货币供应量
+    key: '123430100003_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: m1
+    label: 货币（M1）供应量
+    group: 货币
+    catalog: 金融业/货币供应量
+    key: '123430100009_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: tsf_flow
+    label: 社会融资规模（年度增量）
+    group: 货币
+    catalog: 金融业/社会融资规模及构成
+    key: '1836d6f0f7f84f748ef3f232da28fa0f_1'
+    unit: 亿元
+    clean: none
+    tcode: 1
+    sa: false
+  - id: fx_reserves
+    label: 外汇储备
+    group: 货币
+    catalog: 金融业/黄金和外汇储备
+    key: '8f3f8c0562824344afe454d6d39d5fb5_1'
+    unit: 亿美元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: fai_total
+    label: 全社会固定资产投资
+    group: 投资
+    catalog: 固定资产投资和房地产/全社会固定资产投资
+    key: 'd27216e5d1d74e32812882c86cf9d2dc_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: re_investment
+    label: 房地产开发投资
+    group: 投资
+    catalog: 固定资产投资和房地产/全社会固定资产投资
+    key: '798ddf5486034905ad52b954b0e80c3d_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+
+derived:
+  - id: real_gdp_growth
+    label: 实际 GDP 增长率
+    group: 核算
+    method: index_to_rate
+    source: gdp_index
+    unit: '%'
+    tcode: 1
+    sa: false
+  - id: cpi_inflation
+    label: CPI 通胀率
+    group: 价格
+    method: index_to_rate
+    source: cpi_yoy
+    unit: '%'
+    tcode: 1
+    sa: false
+  - id: gdp_deflator_yoy
+    label: GDP 平减指数同比（由现价 GDP 同比 / 实际增长推算）
+    group: 价格
+    method: deflator_yoy
+    nominal: gdp
+    real_yoy_index: gdp_index
+    unit: '%'
+    tcode: 1
+    sa: false

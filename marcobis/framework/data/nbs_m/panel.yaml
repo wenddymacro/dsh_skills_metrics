@@ -1,0 +1,398 @@
+# 国家统计局月度宏观面板（nbs_m）的定义。
+#
+# scripts/tools/nbs_update.py 读取本文件，从国家数据平台下载每个序列（自动拼接分段表），
+# 按 clean 字段清洗，再计算 derived 中的派生序列，写出 dataset.csv 等文件。
+#
+# 字段说明
+#   id       列名（dataset.csv 的列，lib.load_dataset 用它取数）
+#   label    中文名称
+#   group    分组（价格 / 生产 / 需求 / 外贸 / 财政 / 货币 / 景气 / 就业）
+#   catalog  目录路径：从"月度数据"往下，用 / 分隔；分段表写基础名（不带时段）即可
+#   key      指标键：指标编码（如 '6021702000021_1'）或显示名；编码在表内不唯一时用显示名。
+#            一定要加引号：YAML 会把 6021702000021_1 这种带下划线的数字读成整数 60217020000211
+#   unit     清洗后的单位
+#   clean    清洗步骤（按顺序执行，可以是列表）：
+#              none                  原样（只做分段拼接）
+#              cumulative_to_period  年内累计值 → 当月值（1–2 月合并时平均拆分，见 lib.preprocess.china）
+#              fill_january          增长率序列 1 月缺失时用 1–2 月累计同比（2 月值）填补；
+#                                    同时给 jan_feb_from（同表"累计增长"指标的键）时，1、2 月都缺的年份
+#                                    也用 1–2 月累计增长填补
+#   tcode    建议的平稳化变换，沿用 FRED-MD 的编码：
+#              1 = 水平，2 = 一阶差分，4 = 对数，5 = 对数差分，6 = 对数二阶差分
+#            对数据不做任何变换；只供设定阶段参考。注意：多数序列未经季节调整，
+#            水平量做对数差分前需先季调，或改用同比口径。
+#   sa       是否经过季节调整（NBS 公布的月度数据基本都是 false）
+#   start    （可选）从这个日期开始请求，如 '2017-01'。表的数据起点很晚时设置，避免请求大段空区间
+#
+# 改动本文件后重新运行 nbs_update.py 即可。可以增删序列；用
+#   python3 scripts/tools/nbs_tool.py search 月度 关键词
+#   python3 scripts/tools/nbs_tool.py indicators 月度 "目录路径"
+# 查找目录和指标键。
+
+id: nbs_m
+freq: M
+name: 国家统计局月度宏观面板
+source: 国家统计局 国家数据 https://data.stats.gov.cn/
+area: 全国
+
+series:
+  # ---------------- 价格 ----------------
+  - id: cpi_yoy
+    label: 居民消费价格指数（上年同月=100）
+    group: 价格
+    catalog: 价格指数/居民消费价格分类指数 (上年同月=100)/全国居民消费价格分类指数 (上年同月=100)
+    key: '6021702000021_1'
+    unit: 上年同月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: cpi_mom
+    label: 居民消费价格指数（上月=100）
+    group: 价格
+    catalog: 价格指数/居民消费价格分类指数 (上月=100)/全国居民消费价格分类指数 (上月=100)
+    key: '6021702000023_1'
+    unit: 上月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: core_cpi_yoy
+    label: 不包括食品和能源的居民消费价格指数（上年同月=100）
+    group: 价格
+    catalog: 价格指数/居民消费价格分类指数 (上年同月=100)/全国居民消费价格分类指数 (上年同月=100)
+    key: '6021702000021-6067101000036_1'
+    unit: 上年同月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: core_cpi_mom
+    label: 不包括食品和能源的居民消费价格指数（上月=100）
+    group: 价格
+    catalog: 价格指数/居民消费价格分类指数 (上月=100)/全国居民消费价格分类指数 (上月=100)
+    key: '6021702000023-6067101000036_1'
+    unit: 上月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: cpi_services_yoy
+    label: 服务类居民消费价格指数（上年同月=100）
+    group: 价格
+    catalog: 价格指数/居民消费价格分类指数 (上年同月=100)/全国居民消费价格分类指数 (上年同月=100)
+    key: '6021702000021-6067101000033_1'
+    unit: 上年同月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: ppi_yoy
+    label: 工业生产者出厂价格指数（上年同月=100）
+    group: 价格
+    catalog: 价格指数/工业生产者出厂价格分类指数/工业生产者出厂价格指数 (上年同月=100)
+    key: '6021702000021_1'
+    unit: 上年同月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: ppi_mom
+    label: 工业生产者出厂价格指数（上月=100）
+    group: 价格
+    catalog: 价格指数/工业生产者出厂价格分类指数/工业生产者出厂价格指数 (上月=100)
+    key: '6021702000023_1'
+    unit: 上月=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: ppirm_yoy
+    label: 工业生产者购进价格指数（上年同月=100）
+    group: 价格
+    catalog: 价格指数/工业生产者购进价格指数/工业生产者购进价格指数 (上年同月=100)
+    key: '124870100002-6021702000021_1'
+    unit: 上年同月=100
+    clean: none
+    tcode: 1
+    sa: false
+
+  # ---------------- 生产 ----------------
+  - id: ip_yoy
+    label: 规模以上工业增加值同比增长
+    group: 生产
+    catalog: 工业/规上工业增加值增长速度
+    key: '2518cdacedbd41e790b455113dff9b27_11'
+    jan_feb_from: '2518cdacedbd41e790b455113dff9b27_12'
+    unit: '%'
+    clean: fill_january
+    tcode: 1
+    sa: false
+  - id: services_index_yoy
+    label: 服务业生产指数当月同比增速
+    group: 生产
+    catalog: 服务业生产指数/服务业生产指数
+    key: '9364a7ba784c4fb0bbe6092217c0d80f_11'
+    jan_feb_from: '9364a7ba784c4fb0bbe6092217c0d80f_12'
+    unit: '%'
+    clean: fill_january
+    tcode: 1
+    sa: false
+  - id: electricity
+    label: 发电量（当月，由累计值换算）
+    group: 生产
+    catalog: 能源/能源主要产品产量/发电量
+    key: '124740339522_21'
+    unit: 亿千瓦时
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: ind_profit
+    label: 规模以上工业企业利润总额（当月，由累计值换算）
+    group: 生产
+    catalog: 工业/工业企业主要经济指标
+    key: '利润总额累计值 (亿元)'
+    unit: 亿元
+    clean: cumulative_to_period
+    tcode: 1
+    sa: false
+
+  # ---------------- 需求 ----------------
+  - id: retail_sales
+    label: 社会消费品零售总额（当月，由累计值换算）
+    group: 需求
+    catalog: 国内贸易/社会消费品零售总额
+    key: '0a31c6ae3efc489299149069ea71749a_21'
+    unit: 亿元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: retail_sales_yoy
+    label: 社会消费品零售总额同比增长
+    group: 需求
+    catalog: 国内贸易/社会消费品零售总额
+    key: '0a31c6ae3efc489299149069ea71749a_11'
+    jan_feb_from: '0a31c6ae3efc489299149069ea71749a_12'
+    unit: '%'
+    clean: fill_january
+    tcode: 1
+    sa: false
+  - id: fai_ytd_yoy
+    label: 固定资产投资（不含农户）累计增长
+    group: 需求
+    catalog: 固定资产投资 (不含农户) /固定资产投资概况
+    key: '445b5fab2a964165aef4e4ba41b0c018_12'
+    unit: '%'
+    clean: fill_january
+    tcode: 1
+    sa: false
+  - id: private_fai_ytd_yoy
+    label: 民间固定资产投资累计增长
+    group: 需求
+    catalog: 固定资产投资 (不含农户) /固定资产投资概况
+    key: '6022501006616_12'
+    unit: '%'
+    clean: fill_january
+    tcode: 1
+    sa: false
+  - id: re_investment
+    label: 房地产开发投资（当月，由累计值换算）
+    group: 需求
+    catalog: 房地产/房地产开发投资情况
+    key: '82de016aff0545fdb4fd21e592050504_21'
+    unit: 亿元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: re_sales
+    label: 新建商品房销售额（当月，由累计值换算）
+    group: 需求
+    catalog: 房地产/新建商品房销售额
+    key: '0c67e22fa070440791225520e10d19dd_21'
+    unit: 亿元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+
+  # ---------------- 外贸 ----------------
+  - id: exports
+    label: 出口总值（当月，由累计值换算）
+    group: 外贸
+    catalog: 对外经济/货物进出口总额
+    key: 'b92700c6d4ba4eb4a173ec34f6dfde62_21'
+    unit: 千美元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: imports
+    label: 进口总值（当月，由累计值换算）
+    group: 外贸
+    catalog: 对外经济/货物进出口总额
+    key: '9a217af735814896a45325facca87f24_21'
+    unit: 千美元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: trade_balance
+    label: 进出口差额（当月，由累计值换算）
+    group: 外贸
+    catalog: 对外经济/货物进出口总额
+    key: 'ac453b9eb1d44f56ad234e130bef817c_21'
+    unit: 千美元
+    clean: cumulative_to_period
+    tcode: 1
+    sa: false
+
+  # ---------------- 财政 ----------------
+  - id: fiscal_revenue
+    label: 国家财政收入（当月，由累计值换算）
+    group: 财政
+    catalog: 财政/国家财政预算收入
+    key: '895b04cc5a8b4c6d9f771c7de995f8af_21'
+    unit: 亿元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: fiscal_expenditure
+    label: 国家财政支出（不含债务还本，当月，由累计值换算）
+    group: 财政
+    catalog: 财政/国家财政预算支出
+    key: '81e3e9710c06441999390e78dfc5e84a_21'
+    unit: 亿元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+
+  # ---------------- 货币 ----------------
+  - id: m0
+    label: 流通中现金（M0）期末值
+    group: 货币
+    catalog: 金融/货币供应量
+    key: 'fdde4890c09340b3b7d76704eab1986b_1'
+    unit: 亿元
+    clean: none
+    tcode: 6
+    sa: false
+  - id: m1
+    label: 货币（M1）期末值
+    group: 货币
+    catalog: 金融/货币供应量
+    key: '559aa34beb3743f6b0b1b9b75c6dc3da_1'
+    unit: 亿元
+    clean: none
+    tcode: 6
+    sa: false
+  - id: m2
+    label: 货币和准货币（M2）期末值
+    group: 货币
+    catalog: 金融/货币供应量
+    key: '37bea7cb68064788b91d4c1aa46bf97a_1'
+    unit: 亿元
+    clean: none
+    tcode: 6
+    sa: false
+  - id: m1_yoy
+    label: M1 同比增长
+    group: 货币
+    catalog: 金融/货币供应量
+    key: '559aa34beb3743f6b0b1b9b75c6dc3da_11'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: false
+  - id: m2_yoy
+    label: M2 同比增长
+    group: 货币
+    catalog: 金融/货币供应量
+    key: '37bea7cb68064788b91d4c1aa46bf97a_11'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: false
+
+  # ---------------- 景气与就业 ----------------
+  - id: pmi_mfg
+    label: 制造业采购经理指数
+    group: 景气
+    catalog: 采购经理指数/制造业采购经理指数
+    key: '793a9f10f0494c20acf046aaecf76d2b_1'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: true
+  - id: pmi_mfg_new_orders
+    label: 制造业 PMI 新订单指数
+    group: 景气
+    catalog: 采购经理指数/制造业采购经理指数
+    key: '600250200002_1'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: true
+  - id: pmi_nonmfg
+    label: 非制造业商务活动指数
+    group: 景气
+    catalog: 采购经理指数/非制造业采购经理指数
+    key: '2d2066e864324b2399b2e2edadc46bd0_1'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: true
+  - id: unemployment
+    label: 全国城镇调查失业率
+    group: 就业
+    catalog: 城镇调查失业率/城镇调查失业率
+    key: '410fdcb2740546ffa0818936ca2efb73_1'
+    start: '2017-01'
+    unit: '%'
+    clean: none
+    tcode: 2
+    sa: false
+
+# 派生序列：在下载并清洗完上面的序列后计算。
+#   chain_index  用环比（mom）连乘、同比（yoy）补齐，构造定基指数（lib.preprocess.china.chain_index）；
+#                mom_start 可以让早期不可靠的环比改由同比回推
+#   index_to_rate 把"上年同期=100"类指数转成百分比增长率
+derived:
+  - id: cpi_index
+    label: 居民消费价格定基指数（2020=100，由环比链接、同比补齐）
+    group: 价格
+    method: chain_index
+    mom: cpi_mom
+    yoy: cpi_yoy
+    # 2000–2001 年官方环比与同比明显不一致（12 个月环比连乘与同比最多差约 4.8 个百分点），
+    # 这段改由同比回推，2002 年起才用环比连乘
+    mom_start: '2002-01'
+    base: 2020
+    unit: 2020=100
+    tcode: 5
+    sa: false
+  - id: core_cpi_index
+    label: 核心 CPI 定基指数（2020=100）
+    group: 价格
+    method: chain_index
+    mom: core_cpi_mom
+    yoy: core_cpi_yoy
+    base: 2020
+    unit: 2020=100
+    tcode: 5
+    sa: false
+  - id: ppi_index
+    label: 工业生产者出厂价格定基指数（2020=100）
+    group: 价格
+    method: chain_index
+    mom: ppi_mom
+    yoy: ppi_yoy
+    base: 2020
+    unit: 2020=100
+    tcode: 5
+    sa: false
+  - id: cpi_inflation
+    label: CPI 同比通胀率
+    group: 价格
+    method: index_to_rate
+    source: cpi_yoy
+    unit: '%'
+    tcode: 1
+    sa: false
+  - id: ppi_inflation
+    label: PPI 同比涨幅
+    group: 价格
+    method: index_to_rate
+    source: ppi_yoy
+    unit: '%'
+    tcode: 1
+    sa: false
