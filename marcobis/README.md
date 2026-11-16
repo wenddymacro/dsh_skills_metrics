@@ -44,16 +44,16 @@
 
 ## 安装
 
-**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`<commit>` 换成要安装的提交号。
+**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<commit>&path:/marcobis
+github:wenddymacro/dsh_skills_metrics#0b16cb1e7c1775ef3780c5ccdcc76f0d54cf46cc&path:/marcobis
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/marcobis"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#0b16cb1e7c1775ef3780c5ccdcc76f0d54cf46cc&path:/marcobis"
 ```
 
 从本地 checkout 安装（便于开发）：
