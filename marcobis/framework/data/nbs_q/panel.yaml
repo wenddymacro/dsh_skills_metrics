@@ -1,0 +1,150 @@
+# 国家统计局季度宏观面板（nbs_q）的定义。字段说明见 data/nbs_m/panel.yaml。
+# 日期约定与 FRED-QD 一致：季度用季末月份的 1 日（一季度 = 3 月 1 日）。
+# clean 可用：none | cumulative_to_period（年内累计 → 当季）。
+
+id: nbs_q
+freq: Q
+name: 国家统计局季度宏观面板
+source: 国家统计局 国家数据 https://data.stats.gov.cn/
+area: 全国
+
+series:
+  # ---------------- 国民经济核算 ----------------
+  - id: gdp
+    label: 国内生产总值（现价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (现价)
+    key: 'db8e5a86c08246e79b1b11251927e740_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_primary
+    label: 第一产业增加值（现价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (现价)
+    key: '106020100003_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_secondary
+    label: 第二产业增加值（现价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (现价)
+    key: '106020100002_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_tertiary
+    label: 第三产业增加值（现价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (现价)
+    key: '106020100001_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: va_industry
+    label: 工业增加值（现价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (现价)
+    key: '124870100002_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: va_realestate
+    label: 房地产业增加值（现价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (现价)
+    key: '124020100032_1'
+    unit: 亿元
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_real
+    label: 国内生产总值（不变价，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值 (不变价)
+    key: 'db6f2738c687457297422f8d51dba720_1'
+    unit: 亿元（不变价）
+    clean: none
+    tcode: 5
+    sa: false
+  - id: gdp_yoy_index
+    label: 国内生产总值指数（上年同期=100，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值指数
+    key: '6021702000022_1'
+    unit: 上年同期=100
+    clean: none
+    tcode: 1
+    sa: false
+  - id: gdp_qoq_sa
+    label: 国内生产总值环比增长速度（季调）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值环比增长速度
+    key: 'db8e5a86c08246e79b1b11251927e740_13'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: true
+  - id: va_industry_yoy_index
+    label: 工业增加值指数（上年同期=100，当季）
+    group: 核算
+    catalog: 国民经济核算/国内生产总值指数
+    key: '124870100002-6021702000022_1'
+    unit: 上年同期=100
+    clean: none
+    tcode: 1
+    sa: false
+
+  # ---------------- 其他 ----------------
+  - id: capacity_util
+    label: 工业产能利用率（当季）
+    group: 生产
+    catalog: 工业/工业产能利用率/按三大门类分工业产能利用率
+    key: '工业产能利用率当季值 (%)'
+    unit: '%'
+    clean: none
+    tcode: 1
+    sa: false
+  - id: disp_income_pc
+    label: 全国居民人均可支配收入（当季，由累计值换算）
+    group: 居民
+    catalog: 人民生活/全国居民人均收入情况
+    key: 'f1c5cfda2d1c4a3bac6c99ae3ee5b011_21'
+    unit: 元
+    clean: cumulative_to_period
+    tcode: 5
+    sa: false
+  - id: fai_price_yoy
+    label: 固定资产投资价格指数（上年同季=100，当季）
+    group: 价格
+    catalog: 价格指数/固定资产投资价格指数_当季（上年同季=100）
+    key: '6021702000022_1'
+    unit: 上年同季=100
+    clean: none
+    tcode: 1
+    sa: false
+
+derived:
+  - id: gdp_deflator_yoy
+    label: GDP 平减指数同比（由现价 / 不变价的同比增速之比推算）
+    group: 价格
+    method: deflator_yoy
+    nominal: gdp
+    real_yoy_index: gdp_yoy_index
+    unit: '%'
+    tcode: 1
+    sa: false
+  - id: real_gdp_growth
+    label: 实际 GDP 同比增长率
+    group: 核算
+    method: index_to_rate
+    source: gdp_yoy_index
+    unit: '%'
+    tcode: 1
+    sa: false
