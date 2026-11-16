@@ -33,10 +33,11 @@ agent 的回答每次会略有不同，截图只是一次运行的样子。
 对话框接受 npm 包名、GitHub 仓库地址或本地目录路径。本插件在仓库的 `marcobis/` 子目录里，所以地址要写明提交号和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<提交号>&path:/marcobis
+github:wenddymacro/dsh_skills_metrics#0b16cb1e7c1775ef3780c5ccdcc76f0d54cf46cc&path:/marcobis
 ```
 
-把 `<提交号>` 换成要安装的那个版本的提交号。截图里用的是 `9b60749c88b68cbf2be9b4e4f3d7aac2c1671e0e`。
+`#` 后面是提交号，上面是目前最新的版本 `0b16cb1`（合并 marcobis 之后的 `main`）。要装别的版本，换成对应的提交号即可。
+截图是用更早的提交 `9b60749` 截的，安装过程完全一样。
 
 ![填写安装地址](images/02-add-plugin.jpg)
 
