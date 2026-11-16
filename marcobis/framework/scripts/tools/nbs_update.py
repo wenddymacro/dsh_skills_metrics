@@ -174,6 +174,14 @@ def write_transform_codes(path: Path, codes: dict[str, int]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+DERIVED_INPUT_KEYS = ("mom", "yoy", "source", "nominal", "real_yoy_index", "numerator", "denominator")
+
+
+def derived_inputs(d: dict) -> list[str]:
+    """派生序列定义里引用的输入列。"""
+    return [d[k] for k in DERIVED_INPUT_KEYS if d.get(k)]
+
+
 def update_panel(panel: str, *, only: set[str] | None, start: str | None,
                  refresh_catalog: bool, client) -> dict:
     spec = load_panel(panel)
@@ -233,15 +241,17 @@ def update_panel(panel: str, *, only: set[str] | None, start: str | None,
             print(f"   ✗ {sid:<22} 失败：{exc}", flush=True)
 
     for d in spec.get("derived", []):
-        if only and d["id"] not in only and not any(
-                x in only for x in (d.get("mom"), d.get("yoy"), d.get("source"),
-                                    d.get("nominal"), d.get("real_yoy_index"),
-                                    d.get("numerator"), d.get("denominator")) if x):
+        if only and d["id"] not in only and not any(x in only for x in derived_inputs(d)):
             continue
         pool = dict(clean)
         if existing is not None:
             for col in existing.columns:
                 pool.setdefault(col, existing[col].dropna())
+        missing = [x for x in derived_inputs(d) if x not in pool]
+        if only and d["id"] not in only and missing:
+            # --only 模式下没点名的派生序列：输入不全就跳过，不算失败
+            print(f"   · {d['id']:<22} 跳过（缺少输入 {', '.join(missing)}）", flush=True)
+            continue
         try:
             series, info = compute_derived(d, pool, freq)
             clean[d["id"]] = series

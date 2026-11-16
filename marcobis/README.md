@@ -3,7 +3,7 @@
 把 BIS 的 **MaRCo@BIS**（宏观计量研究助手）做成 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 插件，全部中文化，并新增**国家统计局数据层**。
 
-**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装到拿到一份 VAR 研究设计，附 DeepSeek Harness 桌面版实测截图）
+**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装、设计 VAR 到下载数据、估计和读结果，附 DeepSeek Harness 桌面版实测截图）
 
 安装后，会话的 skill 目录里会多出两个 skill：
 

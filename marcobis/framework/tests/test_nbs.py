@@ -398,6 +398,29 @@ def test_load_panel_rejects_numeric_keys(tmp_path, monkeypatch):
         mod.load_panel("nbs_x")
 
 
+def test_partial_update_skips_derived_with_missing_inputs(tmp_path, monkeypatch, fake, capsys):
+    """--only 只下载同比时，依赖环比的定基指数应跳过，不报失败；依赖齐全的派生照常计算。"""
+    mod = _load_update_module()
+    d = tmp_path / "data" / "nbs_x"
+    d.mkdir(parents=True)
+    (d / "panel.yaml").write_text(
+        "id: nbs_x\nfreq: M\nname: x\nseries:\n"
+        "  - {id: cpi_yoy, catalog: 价格指数/测试指数, key: '6021702000021_1'}\n"
+        "  - {id: cpi_mom, catalog: 价格指数/测试指数, key: '999_1'}\n"
+        "derived:\n"
+        "  - {id: cpi_index, method: chain_index, mom: cpi_mom, yoy: cpi_yoy, base: 2020}\n"
+        "  - {id: cpi_inflation, method: index_to_rate, source: cpi_yoy}\n",
+        encoding="utf-8")
+    monkeypatch.setattr(mod, "ROOT", tmp_path)
+    res = mod.update_panel("nbs_x", only={"cpi_yoy"}, start=None, refresh_catalog=False, client=fake)
+    out = capsys.readouterr().out
+    assert "cpi_index" not in res.get("failed", {}), res
+    assert "跳过" in out and "cpi_mom" in out
+    df = pd.read_csv(d / "dataset.csv", index_col=0, parse_dates=True)
+    assert "cpi_inflation" in df.columns and "cpi_index" not in df.columns
+    assert df.loc["2021-01-01", "cpi_inflation"] == pytest.approx(3.5)
+
+
 # ---------------------------------------------------------------------------
 # 联网（--runslow）
 # ---------------------------------------------------------------------------
