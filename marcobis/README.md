@@ -3,6 +3,8 @@
 把 BIS 的 **MaRCo@BIS**（宏观计量研究助手）做成 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 插件，全部中文化，并新增**国家统计局数据层**。
 
+**图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装到拿到一份 VAR 研究设计，附 DeepSeek Harness 桌面版实测截图）
+
 安装后，会话的 skill 目录里会多出两个 skill：
 
 - **`marco-bis`**：研究工作流的入口。你提出宏观计量问题（"货币政策冲击对中国工业生产和 CPI 有什么影响？"
@@ -59,6 +61,8 @@ dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commi
 ```bash
 dsh plugin --profile <profile> add "link:/abs/path/to/dsh_skills_metrics/marcobis"
 ```
+
+每一步的截图见 [使用指南](docs/GUIDE.md)。
 
 如果把已安装的插件换成另一个来源或版本，需要重启 DeepSeek Harness，新代码才会生效。
 
