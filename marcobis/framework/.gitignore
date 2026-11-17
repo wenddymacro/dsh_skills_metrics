@@ -64,3 +64,8 @@ skills/research-log/tools_to_promote.yaml
 # Stray local data files at the data/ root (registered datasets live in data/<id>/)
 data/*.xlsx
 data/*/fred_*[0-9].csv
+# Global Macro Database：gmd_tool.py update 生成的文件（学术许可，不随框架分发）
+data/gmd/cache/
+data/gmd/metadata.yaml
+data/gmd/varlist.csv
+data/gmd/countries.csv

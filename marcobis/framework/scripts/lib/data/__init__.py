@@ -23,12 +23,14 @@ from .loader import load_dataset
 from .registry import get_dataset_path, load_registry
 from .transforms import TRANSFORM_REGISTRY, FRED_MD_CODE_TO_NAME, transform
 from .fetcher import fetch_data, BaseFetcher, register_fetcher, get_fetcher
+from .gmd_client import load_gmd
 from . import fetchers  # noqa: F401  triggers source-specific fetcher registration
 
 __all__ = [
     "load_dataset",
     "transform",
     "fetch_data",
+    "load_gmd",
     "BaseFetcher",
     "register_fetcher",
     "get_fetcher",

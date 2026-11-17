@@ -118,7 +118,7 @@ README 里"隐私与数据流向"一节，再继续。
 | `scripts/replications/<id>/` | 所有用户 | 示例，每篇经典论文一个 |
 | `scripts/applications/<id>/` | 创建它们的用户 | 用户自己过去的分析 |
 | `tests/` | 框架开发者 | 1,000 多个单元测试和慢测试，固定数学约定（含 `test_doc_consistency.py`，自动防止文档与代码不一致） |
-| `data/` | 所有人 | 数据集注册表；FRED-MD / FRED-QD 目录（CSV 不随框架分发，按各自 UPDATE.md 生成）；国家统计局月度 / 季度 / 年度面板 `nbs_m` / `nbs_q` / `nbs_a`（由 `scripts/tools/nbs_update.py` 下载清洗）；运行时抓取的缓存；`staging/` 存放原始下载和手工准备的序列（已 gitignore） |
+| `data/` | 所有人 | 数据集注册表；FRED-MD / FRED-QD 目录（CSV 不随框架分发，按各自 UPDATE.md 生成）；国家统计局月度 / 季度 / 年度面板 `nbs_m` / `nbs_q` / `nbs_a`（由 `scripts/tools/nbs_update.py` 下载清洗）；Global Macro Database 跨国年度面板 `gmd`（由 `scripts/tools/gmd_tool.py update` 下载，用 `lib.load_gmd` 读取）；运行时抓取的缓存；`staging/` 存放原始下载和手工准备的序列（已 gitignore） |
 | `papers/` | 模式 B 暂存 | 准备复现的论文原文（目录自带 README；PDF 已 gitignore） |
 | `outputs/` | 可丢弃 | 根目录草稿区，用于临时运行（已 gitignore）；各层级的运行写入 `scripts/<tier>/<id>/outputs/` |
 

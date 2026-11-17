@@ -117,3 +117,30 @@ datasets:
   - 国民经济核算（生产法、支出法）
   - 人口、就业、工资
   - 价格、财政、投资、外贸
+# --- Global Macro Database（GMD）：国家 × 年份面板，由 scripts/tools/gmd_tool.py update 下载 ---
+# 学术用途免费、其他用途需作者书面许可，数据不随框架分发。用 lib.load_gmd(...) 读取（不是 load_dataset）。
+- id: gmd
+  name: Global Macro Database
+  description: 全球年度宏观面板：239 个国家 / 地区、70 多个变量（GDP 及支出构成、价格、
+    利率、货币、汇率、财政、外贸、失业、房价、银行 / 主权债务 / 货币危机虚拟变量），
+    拼接 160 多个历史与现行来源；含 IMF WEO 等来源的预测年份（forecast_<变量> 标记，默认剔除）
+  source: Müller, Xu, Lehbib & Chen (2025), NBER WP 33714
+  url: https://www.globalmacrodata.com/
+  license: 学术用途免费；其他用途需作者书面许可（https://www.globalmacrodata.com/license.html）
+  frequency: annual
+  sample_start: 1086（多数国家的主要变量自 19 世纪或 1950 年后）
+  sample_end: 每季度发布新版本（版本号 YYYY_MM）
+  transforms_applied: false
+  verified_by: scripts/tools/gmd_tool.py
+  path: data/gmd/
+  loader: load_gmd
+  format: country_year_panel
+  index_convention: 长表（ISO3, year）；lib.load_gmd(wide=True) 返回 DatetimeIndex（1 月 1 日）、列名 <变量>_<ISO3>，与 nbs_a 一致
+  covers:
+  - 国民经济核算（名义 / 实际 GDP、人均 GDP、消费、投资、进出口、经常账户）
+  - 价格（CPI、通胀、GDP 平减指数、房价）
+  - 利率与货币（短期 / 长期利率、政策利率、M0–M4）
+  - 汇率（对美元汇率、实际有效汇率）
+  - 财政（一般政府 / 中央政府收入、支出、税收、赤字、债务）
+  - 人口、失业率
+  - 危机（银行、主权债务、货币危机）

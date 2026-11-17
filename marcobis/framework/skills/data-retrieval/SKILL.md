@@ -271,7 +271,9 @@ ECB/OECD/IMF/BIS/Eurostat/World Bank。
 变量不在任何预置数据集里时：
 
 1. 从 connections.yaml（或本地经济体的知识库）中**找最合适的来源**。美国序列用 `fred`；中国
-   国家统计局的数据用 `nbs`（无需 key，见下面"国家统计局数据"）；欧元区、OECD、IMF、BIS、
+   国家统计局的数据用 `nbs`（无需 key，见下面"国家统计局数据"）；**跨国年度数据**（239 个国家的
+   GDP、价格、利率、财政、外贸、危机虚拟变量等长历史序列）先用 Global Macro Database `gmd`
+   （无需 key，见下面"Global Macro Database"）；欧元区、OECD、IMF、BIS、
    Eurostat、World Bank 或跨国面板，`dbnomics` 通过一个无需 key 的 API 全部覆盖
    （`api="dbnomics"`，序列 id 为 `PROVIDER/DATASET/SERIES`）。
 2. **检查 API key 是否可用。**如果来源需要 key 而没有设置，停下来，带用户完成设置（见下面
@@ -312,8 +314,8 @@ key 只存在于环境变量中，绝不写进 `config.yaml` 或任何提交的�
 agent 从运行时 API 取数时，抓到的序列会**持久化到磁盘，并登记为预置数据集**，以后的任何项目
 都可以不调用 API 直接复用。这把一次性的抓取变成随时间增长的持久数据资产。
 
-`lib.fetch_data` 自带七个具体 fetcher：`fred`（单个 FRED 序列，需要 `FRED_API_KEY`）、`nbs`
-（国家统计局国家数据，无需 key）、`dbnomics`（ECB / OECD / IMF / BIS / Eurostat / World Bank，
+`lib.fetch_data` 自带八个具体 fetcher：`fred`（单个 FRED 序列，需要 `FRED_API_KEY`）、`nbs`
+（国家统计局国家数据，无需 key）、`gmd`（Global Macro Database 跨国年度面板，无需 key）、`dbnomics`（ECB / OECD / IMF / BIS / Eurostat / World Bank，
 通过一个无需 key 的 API）、`ons`、`boe_iadb`、`csv_file` 和 `external_archive`。见
 [`scripts/lib/data/fetcher.py`](../../scripts/lib/data/fetcher.py) 和
 [`scripts/lib/data/fetchers/`](../../scripts/lib/data/fetchers/)。
@@ -398,6 +400,33 @@ ONS 也来自 BoE）。它的 `metadata.yaml` 为每个抓取的序列单独记�
 
 清洗函数都在 `lib.preprocess.china`：`cumulative_to_period`、`fill_january`、`chain_index`、
 `index_to_rate`、`splice_ratio`、`regularize`。
+
+## Global Macro Database（跨国年度数据）
+
+https://www.globalmacrodata.com/ ：239 个国家 / 地区、约 80 个年度变量（国民账户、价格、利率、
+货币、汇率、财政、外贸、失业、房价、危机虚拟变量），拼接 160 多个来源，部分序列可追溯到数百年前；
+每季度发布一个版本（`YYYY_MM`）。**学术用途免费，其他用途需要作者书面许可**，所以不随框架分发，
+引用 Müller, Xu, Lehbib & Chen (2025, NBER WP 33714)。详细说明见
+[`data/gmd/UPDATE.md`](../../data/gmd/UPDATE.md)。
+
+| 层 | 用法 | 适用场景 |
+|---|---|---|
+| 下载 / 查询工具 `scripts/tools/gmd_tool.py` | `versions` / `update` / `vars` / `countries` / `coverage` / `extract` / `raw` | 下载版本、查变量和 ISO3、看样本覆盖、查来源拼接 |
+| `lib.load_gmd(countries, variables, start, end, version=, forecasts=, wide=)` | 宽表（`rGDP_CHN`，DatetimeIndex 为 1 月 1 日）或长表（`ISO3, year, …`） | 分析脚本中读取（首选） |
+| fetcher `gmd` | `lib.fetch_data(api="gmd", series={"gdp_chn": "CHN:rGDP@2026_09"}, dataset_id=...)` | 与其他来源的年度序列合并缓存 |
+
+`lib.load_dataset(source="gmd")` 不可用，会提示改用 `load_gmd`。第一次使用前先**征得同意**再运行
+`python3 scripts/tools/gmd_tool.py update`（约 30 MB）。在第 3 阶段要主动说明：
+
+1. **只有年度数据**；月度 / 季度研究不要用它充数。
+2. **预测值默认被剔除**（`forecast_<变量>` = 1 的年份置为缺失）。只有用户明确要用 WEO 等预测时才加
+   `forecasts=True`，并在研究日志里写明。
+3. **单位**：水平量多为百万本币；跨国比较用 `_USD`、`_GDP` 口径或对数增长率。
+4. **拼接断点**：长序列来自多个来源按比例衔接。长样本研究先用 `gmd_tool.py coverage` 看缺口，
+   用 `gmd_tool.py raw <变量> --country <ISO3>` 查来源切换年份（`source`、`source_change` 列）。
+5. **版本**：研究日志记录 `df.attrs["gmd_version"]`；同一研究固定一个版本（`version="2026_09"`）。
+6. 适合的模型：跨国面板 VAR（`canova_ciccarelli_2013_panel_var`）、面板局部投影（如危机后果、
+   财政乘数的跨国 LP）、长期增长 / 通胀历史分析、单个国家的年度 VAR。
 
 ## 数据获取处置
 

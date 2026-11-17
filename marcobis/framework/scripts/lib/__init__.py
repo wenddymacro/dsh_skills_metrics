@@ -123,7 +123,7 @@ from .inference import (
     draw_parameter_samples,
 )
 from .report import VARReport, draft_narrative
-from .data import load_dataset, transform, fetch_data
+from .data import load_dataset, transform, fetch_data, load_gmd
 from .forecast import (
     ForecastContainer,
     ConditionalForecastContainer,
@@ -238,6 +238,7 @@ __all__ = [
     "load_dataset",
     "transform",
     "fetch_data",
+    "load_gmd",
     "ForecastContainer",
     "ConditionalForecastContainer",
     "iterated_forecast",

@@ -6,7 +6,8 @@ description: >-
   覆盖 VAR、BVAR、局部投影（LP、LP-IV）、短期/长期/符号/零+符号约束识别、外部工具变量
   （proxy SVAR）、异方差识别、非高斯 SVAR、TVP-VAR、面板 VAR、FAVAR、动态因子模型、
   混频 VAR、条件预测、溢出指数、HP/Hamilton/BN 滤波等，带 30 篇经典论文的可运行复现，
-  数据可用 FRED-MD/QD、国家统计局（月度/季度/年度）、DBnomics 等。用户想做 VAR /
+  数据可用 FRED-MD/QD、国家统计局（月度/季度/年度）、Global Macro Database（239 国年度面板）、
+  DBnomics 等。做跨国 / 全球宏观研究（各国 GDP、通胀、利率、财政、危机的长历史面板）时也使用。用户想做 VAR /
   脉冲响应 / 货币政策冲击 / 结构识别 / 宏观预测，复现 Sims (1980)、CEE、Uhlig、
   Gertler-Karadi 等论文，提交一篇宏观计量论文让你复现，或问"这个问题该用什么模型"
   "货币政策如何影响产出和通胀""估计一个 VAR""做脉冲响应""复现这篇论文"时使用。
@@ -85,6 +86,13 @@ skill 目录调用。
 - **产出放在脚本旁的 `outputs/` 子目录**（`scripts/<tier>/<id>/outputs/`）。
   新分析的脚本放 `scripts/applications/<id>/`。
 - **会改动 `data/` 的脚本、安装软件包、联网下载数据，都先问再做。**
+
+## 全球数据（Global Macro Database）
+
+研究涉及多个国家、全球宏观或长历史年度数据时，同时使用 `gmd-data` skill（本插件自带）：
+它说明 https://www.globalmacrodata.com/ 的下载（`scripts/tools/gmd_tool.py`）、读取
+（`lib.load_gmd`）和使用注意（年度频率、预测值默认剔除、来源拼接断点、版本固定、学术许可）。
+工作区里的说明文件是 `data/gmd/UPDATE.md`。
 
 ## 中国数据
 
