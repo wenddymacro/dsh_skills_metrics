@@ -46,6 +46,7 @@ USER_OWNED_PREFIXES = (
     "skills/knowledge-base/context/",
     "data/staging/",
     "data/nbs_catalog/",
+    "data/gmd/cache/",
 )
 USER_OWNED_FILES = {"data/registry.local.yaml", "skills/research-log/tools_to_promote.yaml"}
 
@@ -106,6 +107,8 @@ def framework_files() -> dict[str, Path]:
         rel = "/".join(rel_parts)
         if rel.endswith("/dataset.csv"):
             continue
+        if rel.startswith("data/gmd/") and rel != "data/gmd/UPDATE.md":
+            continue  # gmd_tool.py update 生成的文件（学术许可，不分发）
         out[rel] = p
     return out
 
@@ -142,6 +145,13 @@ def panel_status(ws: Path) -> list[dict]:
             info["size_kb"] = round(csv.stat().st_size / 1024, 1)
             info["modified"] = datetime.fromtimestamp(csv.stat().st_mtime).isoformat(timespec="seconds")
         out.append(info)
+    cached = sorted((ws / "data" / "gmd" / "cache").glob("GMD_*.csv"))
+    info = {"id": "gmd", "downloaded": bool(cached)}
+    if cached:
+        info["versions"] = [p.stem[len("GMD_"):] for p in reversed(cached)]
+        info["size_kb"] = round(cached[-1].stat().st_size / 1024, 1)
+        info["modified"] = datetime.fromtimestamp(cached[-1].stat().st_mtime).isoformat(timespec="seconds")
+    out.append(info)
     return out
 
 

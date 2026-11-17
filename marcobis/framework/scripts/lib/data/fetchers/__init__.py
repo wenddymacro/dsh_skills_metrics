@@ -15,6 +15,7 @@ Currently implemented:
 | ``"csv_file"``        | Local CSV (stage manually-downloaded data)  | ``path:column``      |
 | ``"external_archive"``| Author GitHub / journal supplementary CSVs  | ``url:column`` or dict |
 | ``"nbs"``             | 国家统计局 国家数据（月度 / 季度 / 年度，无需 key） | ``"频率|目录|指标键"`` or dict |
+| ``"gmd"``             | Global Macro Database（年度，239 国，无需 key） | ``"ISO3:变量[@版本]"`` or dict |
 
 Note: ``"fred"`` is for *individual* FRED series and needs a free API key
 (``FRED_API_KEY`` env var). The bulk McCracken FRED-MD / FRED-QD panels are
@@ -33,3 +34,4 @@ from . import boe_iadb           # noqa: F401  registers "boe_iadb"
 from . import csv_file           # noqa: F401  registers "csv_file"
 from . import external_archive   # noqa: F401  registers "external_archive"
 from . import nbs                # noqa: F401  registers "nbs"
+from . import gmd                # noqa: F401  registers "gmd"
