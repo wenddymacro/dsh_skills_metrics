@@ -8,8 +8,7 @@ Perez-Cruz，BIS Working Papers No. 1395，2026）随附发布的公共产品。
 （价格之谜、爆炸根、弱工具变量）进入最终结果之前把它们指出来。
 
 > 本工作区来自 DeepSeek Harness 插件 `marcobis`，是上游仓库的中文化版本，并新增了国家统计局
-> 数据层。修改清单见 [`MODIFICATIONS.md`](MODIFICATIONS.md)。本插件不是 BIS 官方发布，也未经 BIS
-> 认可。
+> 数据层。修改清单见 [`MODIFICATIONS.md`](MODIFICATIONS.md)。
 
 框架由三部分组成：[skills](skills/)（工作流和领域知识，纯 Markdown）、一个由 1,000 多个测试覆盖
 的 [Python 参考库](scripts/lib/)，以及一部经典论文设定的[字典](skills/model-dictionary/entries/)，

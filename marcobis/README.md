@@ -16,7 +16,6 @@
 
 上游框架来自 BIS 工作论文 *"MaRCo@BIS: AI-agentic econometric analysis for central bankers"*
 （Lombardi、Park、Perez-Cruz，BIS Working Papers No. 1395，2026）随附的开源仓库（Apache-2.0）。
-**本插件不是 BIS 官方发布，也未经 BIS 认可或审阅。**
 
 ## 功能
 

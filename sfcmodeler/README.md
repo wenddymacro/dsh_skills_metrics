@@ -5,8 +5,6 @@ Python，基于 SymPy 和 pandas）做成 [DeepSeek Harness](https://github.com/
 安装后，会话的 skill 目录里会多出 **`sfc-modeler`**：你用自然语言描述模型或冲击，agent 写出模型文件、求解、
 施加冲击、核对会计恒等式，并给出中文摘要和图。
 
-**本插件不是 SFCmodeler 作者的官方发布，也未经其认可或审阅。**
-
 ## 功能
 
 - **写模型**：方程直接写成 `C << alpha1*YD + alpha2*V(-1)`、`d(V) << YD - C`；部门和资产多时，
