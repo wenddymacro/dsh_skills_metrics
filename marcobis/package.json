@@ -1,6 +1,6 @@
 {
   "name": "@dsh-skills-metrics/marcobis",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "DSH 插件：把 BIS 的 MaRCo@BIS 宏观计量研究助手（七阶段人机协同工作流、VAR/BVAR/LP/SVAR 等参考实现、经典论文复现库）装进 DeepSeek Harness，并新增国家统计局月度、季度、年度数据层（自动下载、拼接分段表、累计值转当期值、定基指数链接）。",
@@ -20,6 +20,7 @@
   },
   "files": [
     "index.js",
+    "update-check.js",
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",

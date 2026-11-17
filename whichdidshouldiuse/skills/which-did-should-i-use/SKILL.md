@@ -31,6 +31,24 @@ Requirements: Stata 16+ on this machine (found automatically; otherwise set `STA
 On first use the command installs `distinct` from SSC; HAD panels without stayers also fetch
 `did_had`, `nprobust` and `gtools`. That needs network access the first time only.
 
+## Plugin update check (once per session)
+
+The first time this skill is used in a session, read `~/.dsh/cache/dsh-skills-metrics/whichdidshouldiuse.json`
+(`$DSH_HOME/cache/dsh-skills-metrics/whichdidshouldiuse.json` when `DSH_HOME` is set; on Windows `~` is
+`%USERPROFILE%`). The plugin refreshes this file in the background from the repository's release tags.
+If the file is missing or unreadable, or `updateAvailable` is not `true`, say nothing about it and carry on.
+
+If `updateAvailable` is `true`, tell the user in one sentence, then continue with their request
+without waiting for an answer:
+
+> The whichdidshouldiuse plugin has a new version `<latest>` (installed: `<installed>`). Changes: `<changesUrl>`. Update now?
+
+Only after the user says yes, call the `plugin_manager` tool with `action: "install_bundle"` and
+`target` set to the file's `installSpec`; DSH asks the user to approve the call. Report the result,
+and pass on its `nextStep` when it has one (for example, restart DSH). If the call fails, give the
+user the `installSpec` to add by hand on the Plugins page. If the user declines, do not raise it again
+in this session. Never update without the user's yes.
+
 ## Workflow
 
 1. **Find the data and the four roles.** If the user has not named the variables, inspect the file:

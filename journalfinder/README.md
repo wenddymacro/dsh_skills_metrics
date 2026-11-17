@@ -26,17 +26,17 @@
 
 ## 安装
 
-**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`<commit>` 换成要安装的提交号。
+**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是版本标签，下面是目前最新的版本 0.2.0。
 每一步的截图见 [使用指南](docs/GUIDE.md)。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<commit>&path:/journalfinder
+github:wenddymacro/dsh_skills_metrics#journalfinder-v0.2.0&path:/journalfinder
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/journalfinder"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#journalfinder-v0.2.0&path:/journalfinder"
 ```
 
 从本地 checkout 安装（便于开发）：
@@ -46,6 +46,19 @@ dsh plugin --profile <profile> add "link:/abs/path/to/dsh_skills_metrics/journal
 ```
 
 如果把已安装的插件换成另一个来源或版本，需要重启 DeepSeek Harness，新代码才会生效。
+
+## 更新
+
+插件会在 DeepSeek Harness 启动时，在后台查看本仓库有没有更新的发布标签（每 12 小时最多查一次，
+查不到或网络不通时不影响使用）。有新版本时，下次使用插件的会话里，agent 会用一句话提醒你，
+问要不要更新；你同意后，它通过 dsh 的 `plugin_manager` 工具安装新版本，dsh 会再请你批准一次。
+不会在你不知情的情况下更新。
+
+也可以自己更新：把上面地址里的版本号换成新的标签（标签列表见
+[Tags](https://github.com/wenddymacro/dsh_skills_metrics/tags)），重新「添加插件」。
+
+查询结果保存在 `~/.dsh/cache/dsh-skills-metrics/journalfinder.json`。不想联网检查，就设置环境变量
+`DSH_SKILLS_METRICS_UPDATE_CHECK=0`。0.2.0 之前的版本没有这个功能，需要手动更新到 0.2.0 或更新的版本一次。
 
 ## 使用
 
@@ -73,6 +86,7 @@ journalfinder/
 ├── package.json            # dsh.bundle 声明，不打包任何依赖
 ├── cordis.patch.yml        # 挂载本包的插件
 ├── index.js                # 用 dsh 自带的 skill-filesystem provider 挂载 skills/
+├── update-check.js         # 后台检查新版本，写出更新状态文件
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
 ├── docs/                   # 图文使用指南、示例稿件、配图

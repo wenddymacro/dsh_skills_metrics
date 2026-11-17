@@ -27,6 +27,22 @@ description: >-
 | `<skill-dir>/scripts/marco_workspace.py` | 工作区管理：`init`、`status`、`upgrade`、`doctor`，输出 JSON |
 | `<skill-dir>/../../framework/` | 框架模板（只读）：工作区就是从这里复制出来的 |
 
+## 插件更新检查（每个会话一次）
+
+本会话第一次使用本 skill 时，先读取 `~/.dsh/cache/dsh-skills-metrics/marcobis.json`
+（设置了 `DSH_HOME` 时是 `$DSH_HOME/cache/dsh-skills-metrics/marcobis.json`；Windows 上 `~` 是
+`%USERPROFILE%`）。插件会在后台根据仓库的发布标签刷新这个文件。文件不存在、读不了，
+或 `updateAvailable` 不是 `true`，就不要提这件事，直接继续。
+
+如果 `updateAvailable` 是 `true`，用一句话告诉用户，然后不等回答，继续处理用户的请求：
+
+> marcobis 插件有新版本 `<latest>`（当前 `<installed>`），更新内容见 `<changesUrl>`。要现在更新吗？
+
+只有用户同意后，才调用 `plugin_manager` 工具，`action` 用 `"install_bundle"`，`target` 用文件里的
+`installSpec`；DSH 会请用户批准这次调用。把结果告诉用户，结果里有 `nextStep`（例如需要重启 DSH）
+就照着转告。调用失败时，把 `installSpec` 给用户，让用户在「插件 → 添加插件」里手动安装。用户拒绝就
+本会话不再提。没有用户同意，不要更新。
+
 ## 第 0 步：准备工作区（每个会话先做）
 
 框架的代码、数据缓存和分析结果都放在一个**工作区**目录里，不放在插件安装目录里，

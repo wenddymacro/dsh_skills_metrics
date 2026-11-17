@@ -52,6 +52,24 @@ tell the user that command, or ask for a `.docx` or the pasted title and abstrac
   papers pass scope keywords from each field, and state in the report that this run used keyword
   matching only.
 
+## Plugin update check (once per session)
+
+The first time this skill is used in a session, read `~/.dsh/cache/dsh-skills-metrics/journalfinder.json`
+(`$DSH_HOME/cache/dsh-skills-metrics/journalfinder.json` when `DSH_HOME` is set; on Windows `~` is
+`%USERPROFILE%`). The plugin refreshes this file in the background from the repository's release tags.
+If the file is missing or unreadable, or `updateAvailable` is not `true`, say nothing about it and carry on.
+
+If `updateAvailable` is `true`, tell the user in one sentence, then continue with their request
+without waiting for an answer:
+
+> The journalfinder plugin has a new version `<latest>` (installed: `<installed>`). Changes: `<changesUrl>`. Update now?
+
+Only after the user says yes, call the `plugin_manager` tool with `action: "install_bundle"` and
+`target` set to the file's `installSpec`; DSH asks the user to approve the call. Report the result,
+and pass on its `nextStep` when it has one (for example, restart DSH). If the call fails, give the
+user the `installSpec` to add by hand on the Plugins page. If the user declines, do not raise it again
+in this session. Never update without the user's yes.
+
 ## Workflow
 
 ### 1. Get the paper
