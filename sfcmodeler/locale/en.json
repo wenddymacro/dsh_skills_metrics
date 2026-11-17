@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SFC stock-flow consistent models",
+    "description": "Adds a skill that builds, solves and shocks post-Keynesian stock-flow consistent (SFC) models with SFCmodeler (Python, on SymPy and pandas), with Godley & Lavoie's SIM, PC and LP as examples, and writes CSV tables and charts. Requires Python 3.10 or later."
+  }
+}
