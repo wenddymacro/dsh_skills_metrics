@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# sfc_run.py 的默认输出目录
+sfc_output/

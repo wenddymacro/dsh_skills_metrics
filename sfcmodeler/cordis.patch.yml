@@ -1,0 +1,5 @@
+# 挂载本包的插件，把 skills/sfc-modeler 暴露给每个会话。
+# 这里不写任何路径或配置：index.js 根据自身模块 URL 找到 skills/。
+- insert:
+    - id: sfcmodeler-skill
+      name: '@dsh-skills-metrics/sfcmodeler'

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "SFC 存量流量一致模型",
+    "description": "添加一个技能：用 SFCmodeler（Python，基于 SymPy 和 pandas）搭建、求解和冲击后凯恩斯主义存量流量一致（SFC）模型，含 Godley & Lavoie 的 SIM、PC、LP 示例，输出 CSV 和图表。需要 Python 3.10 及以上。"
+  }
+}
