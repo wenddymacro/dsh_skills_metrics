@@ -30,17 +30,16 @@ Python，基于 SymPy 和 pandas）做成 [DeepSeek Harness](https://github.com/
 
 ## 安装
 
-**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，
-换成你要安装的版本（合并到 main 后的提交号）。
+**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<commit>&path:/sfcmodeler
+github:wenddymacro/dsh_skills_metrics#07237d3cf0b72639b5c0d346047e035af8cc7ebc&path:/sfcmodeler
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/sfcmodeler"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#07237d3cf0b72639b5c0d346047e035af8cc7ebc&path:/sfcmodeler"
 ```
 
 从本地 checkout 安装（便于开发）：
