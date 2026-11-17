@@ -18,8 +18,7 @@ description: >-
 本 skill 是 MaRCo@BIS 框架在 DeepSeek Harness 里的入口。框架来自国际清算银行（BIS）
 工作论文 *"MaRCo@BIS: AI-agentic econometric analysis for central bankers"*
 （Lombardi、Park、Perez-Cruz，BIS Working Papers No. 1395，2026）随附的开源仓库
-（Apache-2.0）。本插件不是 BIS 官方发布，也不代表 BIS 的观点。插件在上游基础上
-做了中文化，并新增了国家统计局数据层。
+（Apache-2.0）。插件在上游基础上做了中文化，并新增了国家统计局数据层。
 
 下面用 `<skill-dir>` 表示本 skill 的资源目录（随 skill 一起报告的 base directory）。
 

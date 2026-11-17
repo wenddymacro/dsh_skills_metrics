@@ -7,8 +7,7 @@ Apache License 2.0，见 [`LICENSE`](LICENSE) 和 [`NOTICE`](NOTICE)），上游
 - 提交：`8a51b9a4ff8953b0c7deb73de15883734c5bddfd`（2026-11-12）
 
 按 Apache License 2.0 第 4(b) 条，这里列出修改过的文件。这些修改由 DeepSeek Harness 插件
-`marcobis` 的维护者做出，不代表 BIS，也未经 BIS 认可或审阅。BIS 的名称和标志未经 BIS 书面
-许可不得使用（见 NOTICE）。
+`marcobis` 的维护者做出。BIS 的名称和标志未经 BIS 书面许可不得使用（见 NOTICE）。
 
 ## 新增文件
 

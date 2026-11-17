@@ -5,8 +5,6 @@ Python，基于 SymPy 和 pandas）做成 [DeepSeek Harness](https://github.com/
 安装后，会话的 skill 目录里会多出 **`sfc-modeler`**：你用自然语言描述模型或冲击，agent 写出模型文件、求解、
 施加冲击、核对会计恒等式，并给出中文摘要和图。
 
-**本插件不是 SFCmodeler 作者的官方发布，也未经其认可或审阅。**
-
 ## 功能
 
 - **写模型**：方程直接写成 `C << alpha1*YD + alpha2*V(-1)`、`d(V) << YD - C`；部门和资产多时，
@@ -30,17 +28,16 @@ Python，基于 SymPy 和 pandas）做成 [DeepSeek Harness](https://github.com/
 
 ## 安装
 
-**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，
-换成你要安装的版本（合并到 main 后的提交号）。
+**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<commit>&path:/sfcmodeler
+github:wenddymacro/dsh_skills_metrics#07237d3cf0b72639b5c0d346047e035af8cc7ebc&path:/sfcmodeler
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/sfcmodeler"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#07237d3cf0b72639b5c0d346047e035af8cc7ebc&path:/sfcmodeler"
 ```
 
 从本地 checkout 安装（便于开发）：
