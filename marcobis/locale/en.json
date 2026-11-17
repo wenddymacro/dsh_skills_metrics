@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "MaRCo macroeconometric companion",
-    "description": "Adds the BIS MaRCo@BIS macroeconometric research framework: a seven-stage human-in-the-loop workflow (model choice, specification, data, estimation, sensibility checks, reporting, curation), reference implementations of VAR, BVAR, local projections, sign restrictions, TVP-VAR and more, and 30 canonical paper replications. Adds a China NBS data layer: monthly, quarterly and annual panels downloaded and cleaned automatically (segment splicing, cumulative-to-period conversion, fixed-base price indices). Requires Python 3.10+."
+    "description": "Adds the BIS MaRCo@BIS macroeconometric research framework: a seven-stage human-in-the-loop workflow (model choice, specification, data, estimation, sensibility checks, reporting, curation), reference implementations of VAR, BVAR, local projections, sign restrictions, TVP-VAR and more, and 30 canonical paper replications. Adds a China NBS data layer: monthly, quarterly and annual panels downloaded and cleaned automatically (segment splicing, cumulative-to-period conversion, fixed-base price indices). Adds a Global Macro Database layer: annual macro panel for 239 countries, downloaded, queried and sliced by country and variable. Requires Python 3.10+."
   }
 }

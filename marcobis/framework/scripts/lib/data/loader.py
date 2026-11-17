@@ -147,6 +147,13 @@ def load_dataset(
     csv_path = get_dataset_path(source, registry=registry)
     entry = next((e for e in registry.get("datasets", []) if e["id"] == source), {})
 
+    if entry.get("loader"):
+        # 国家 × 年份面板（如 GMD）不是单一时间序列宽表，有专门的读取函数
+        raise ValueError(
+            f"数据集 {source!r} 是国家面板，用 lib.{entry['loader']}(...) 读取，"
+            f"不能用 load_dataset；见 data/{source}/UPDATE.md。"
+        )
+
     if not csv_path.exists():
         raise FileNotFoundError(
             f"Dataset CSV not found at {csv_path}.\n"

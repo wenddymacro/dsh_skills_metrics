@@ -3,6 +3,16 @@
 
 connections:
 
+  gmd:
+    provider: "Global Macro Database (Müller, Xu, Lehbib & Chen 2025, NBER WP 33714)"
+    api_endpoint: "https://gmd-releases.s3.ap-southeast-2.amazonaws.com/data"
+    api_key_env: null
+    rate_limit: "static files; one ~30 MB download per version"
+    package: null   # implemented: lib.load_gmd / lib.fetch_data(api="gmd") / scripts/tools/gmd_tool.py
+    documentation: "https://www.globalmacrodata.com/"
+    license: "free for academic use; other uses need written permission"
+    # Annual country-year panel, 239 countries, ~80 variables, with forecast flags.
+
   fred:
     provider: "Federal Reserve Bank of St. Louis"
     api_endpoint: "https://api.stlouisfed.org/fred"

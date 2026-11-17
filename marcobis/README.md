@@ -1,16 +1,18 @@
 # marcobis · DSH 插件
 
 把 BIS 的 **MaRCo@BIS**（宏观计量研究助手）做成 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
-插件，全部中文化，并新增**国家统计局数据层**。
+插件，全部中文化，并新增**国家统计局数据层**和 **Global Macro Database 全球数据层**。
 
 **图文使用指南：[docs/GUIDE.md](docs/GUIDE.md)**（从安装、设计 VAR 到下载数据、估计和读结果，附 DeepSeek Harness 桌面版实测截图）
 
-安装后，会话的 skill 目录里会多出两个 skill：
+安装后，会话的 skill 目录里会多出三个 skill：
 
 - **`marco-bis`**：研究工作流的入口。你提出宏观计量问题（"货币政策冲击对中国工业生产和 CPI 有什么影响？"
   "复现 Sims (1980)"），agent 带你走七阶段流程：选模型 → 定设定 → 取数据 → 估计 → 合理性检查 → 报告 → 归档。
   每个关键决策都先给出方案、说明依据，等你确认后再继续。
 - **`nbs-data`**：国家统计局月度、季度、年度数据的下载、清洗和取用，也可以单独使用（"帮我下载中国的 CPI 和 M2"）。
+- **`gmd-data`**：[Global Macro Database](https://www.globalmacrodata.com/) 全球年度宏观数据（239 个国家 / 地区、约 80 个变量、
+  长历史序列）的下载、查询和取用，也可以单独使用（"给我 G7 国家 1960 年以来的实际 GDP 和通胀"）。
 
 上游框架来自 BIS 工作论文 *"MaRCo@BIS: AI-agentic econometric analysis for central bankers"*
 （Lombardi、Park、Perez-Cruz，BIS Working Papers No. 1395，2026）随附的开源仓库（Apache-2.0）。
@@ -32,6 +34,13 @@
   - 自动清洗：按指标编码拼接分段表（如 CPI 的 -2015 / 2016-2020 / 2021-2025 / 2026- 四张表）、累计值换算为当月 / 当季值、
     1–2 月合并公布的处理、同比 / 环比链接定基指数（附核对误差）；原始值另存 `raw.csv`；
   - `nbs` fetcher 和 `nbs_tool.py`，可以按目录 / 指标抓取平台上任意全国指标。
+- **Global Macro Database 全球数据层**（本插件新增）：
+  - [GMD](https://www.globalmacrodata.com/)（Müller、Xu、Lehbib、Chen，NBER WP 33714）：239 个国家 / 地区的年度面板，
+    国民账户、价格、利率、货币、汇率、财政、外贸、失业、房价、危机虚拟变量，拼接 160 多个来源，部分序列可追溯数百年；
+  - `gmd_tool.py`：查看版本、下载、查变量和国家、样本覆盖、切取数据、查看来源拼接；
+  - `lib.load_gmd(...)` 返回 `rGDP_CHN` 式宽表（与 `nbs_a` 日期约定一致）或长表（面板模型用），
+    `lib.fetch_data(api="gmd", ...)` 可与其他来源一起缓存；预测年份默认剔除，版本可固定；
+  - **GMD 学术用途免费，其他用途需要作者书面许可**，数据在本机下载，不随插件分发。
 - **中文化**：skill、操作说明、README、数学约定等文档全部译为简体中文；代码、标识符、模型字典条目保留英文。
 
 ## 依赖
@@ -40,7 +49,7 @@
 - 本机 Python 3.10 及以上（`python3`；Windows 上为 `python`）
 - 估计需要 `numpy<2`、`pandas`、`scipy`、`statsmodels`、`plotly`、`PyYAML`（工作区里的 `requirements.txt`）。
   只下载国家统计局数据时，只需 `numpy`、`pandas`、`PyYAML`
-- 网络：能访问 https://data.stats.gov.cn/ （国家统计局数据）；FRED 数据需按说明手工下载
+- 网络：能访问 https://data.stats.gov.cn/ （国家统计局数据）、https://gmd-releases.s3.ap-southeast-2.amazonaws.com/ （GMD 数据）；FRED 数据需按说明手工下载
 
 ## 安装
 
@@ -104,6 +113,22 @@ python3 <插件目录>/skills/marco-bis/scripts/marco_workspace.py doctor    # �
 升级时只覆盖你没改过的文件；你改过的文件保留原样，新版本另存为 `<文件>.new`，由你合并。`scripts/applications/`、
 `data/` 下的数据、知识库 `context/` 和各处 `outputs/` 从不触碰。
 
+### 全球数据（Global Macro Database）
+
+在工作区根目录：
+
+```bash
+python3 scripts/tools/gmd_tool.py update                                  # 下载最新版本（约 30 MB）
+python3 scripts/tools/gmd_tool.py coverage CHN USA JPN --vars rGDP CPI    # 样本覆盖
+python3 scripts/tools/gmd_tool.py extract --countries CHN USA --vars rGDP infl --start 1980
+```
+
+```python
+df = lib.load_gmd(["CHN", "USA", "JPN"], ["rGDP", "infl", "strate"], start=1960)
+```
+
+说明见工作区的 `data/gmd/UPDATE.md` 和 `gmd-data` skill。
+
 ### 国家统计局数据
 
 在工作区根目录：
@@ -131,17 +156,18 @@ marcobis/
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
 ├── LICENSE, NOTICE         # 上游的 Apache-2.0 许可和 BIS 声明
-├── skills/                 # 挂载到 DSH 的 skill（只有这两个）
+├── skills/                 # 挂载到 DSH 的 skill（只有这三个）
 │   ├── marco-bis/          # 入口：SKILL.md + scripts/marco_workspace.py
-│   └── nbs-data/           # 国家统计局数据
+│   ├── nbs-data/           # 国家统计局数据
+│   └── gmd-data/           # Global Macro Database 全球数据
 ├── framework/              # 上游框架的中文化版本（工作区模板，不直接挂载）
 │   ├── CLAUDE.md, README.md, CONVENTIONS.md, MODIFICATIONS.md, config.yaml, ...
 │   ├── skills/             # 12 个子 skill（主控、设定、数据获取、诊断……），由 agent 按路径读取
-│   ├── scripts/lib/        # Python 参考库（含新增的 data/nbs_client.py、preprocess/china.py）
+│   ├── scripts/lib/        # Python 参考库（含新增的 data/nbs_client.py、data/gmd_client.py、preprocess/china.py）
 │   ├── scripts/replications/  # 30 个经典复现
-│   ├── scripts/tools/      # nbs_update.py、nbs_tool.py 等
-│   ├── data/               # 注册表、FRED 与国家统计局面板定义
-│   └── tests/              # 上游测试 + test_nbs.py
+│   ├── scripts/tools/      # nbs_update.py、nbs_tool.py、gmd_tool.py 等
+│   ├── data/               # 注册表、FRED 与国家统计局面板定义、GMD 说明
+│   └── tests/              # 上游测试 + test_nbs.py、test_gmd.py
 └── test.mjs                # node --test test.mjs
 ```
 
