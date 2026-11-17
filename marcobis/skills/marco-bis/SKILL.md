@@ -39,10 +39,15 @@ description: >-
 
 > marcobis 插件有新版本 `<latest>`（当前 `<installed>`），更新内容见 `<changesUrl>`。要现在更新吗？
 
-只有用户同意后，才调用 `plugin_manager` 工具，`action` 用 `"install_bundle"`，`target` 用文件里的
-`installSpec`；DSH 会请用户批准这次调用。把结果告诉用户，结果里有 `nextStep`（例如需要重启 DSH）
-就照着转告。调用失败时，把 `installSpec` 给用户，让用户在「插件 → 添加插件」里手动安装。用户拒绝就
-本会话不再提。没有用户同意，不要更新。
+怎么更新看 `updateMethod`。没有用户同意，不要更新；用户拒绝就本会话不再提。
+
+- `plugins-page`（从 npm 安装）：请用户打开「插件」页，找到本插件，点更新按钮并选 `<latest>`。
+  不要调用 `plugin_manager install_bundle`：对已经从 npm 安装的包，DSH 会拒绝。插件页还没列出
+  `<latest>` 时，是 npm 镜像还没同步，稍后再试。
+- `install_bundle`（从 GitHub 安装）：用户同意后，调用 `plugin_manager` 工具，`action` 用
+  `"install_bundle"`，`target` 用文件里的 `installSpec`；DSH 会请用户批准这次调用。把结果告诉用户，
+  结果里有 `nextStep`（例如需要重启 DSH）就照着转告。调用失败时，把 `installSpec` 给用户，让用户在
+  「插件 → 添加插件」里手动安装。
 
 ## 第 0 步：准备工作区（每个会话先做）
 

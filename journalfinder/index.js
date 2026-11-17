@@ -85,11 +85,12 @@ export async function apply(ctx) {
  * @returns {Promise<object | undefined>} the status written, if any.
  */
 export function startUpdateCheck(options = {}) {
+  const packageDir = dirname(fileURLToPath(import.meta.url))
   let manifest
   try {
-    manifest = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'package.json'), 'utf8'))
+    manifest = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8'))
   } catch {
     return Promise.resolve(undefined)
   }
-  return checkForUpdate({ folder: FOLDER, packageName: manifest.name, installed: manifest.version, ...options })
+  return checkForUpdate({ folder: FOLDER, packageName: manifest.name, installed: manifest.version, packageDir, ...options })
 }

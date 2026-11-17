@@ -39,6 +39,8 @@ github:wenddymacro/dsh_skills_metrics#marcobis-v0.2.0&path:/marcobis
 `#` 后面是版本标签，上面是目前最新的版本 0.2.0（含 Global Macro Database 数据层）；也可以填提交号。
 截图是用更早的提交 `9b60749` 截的，安装过程完全一样。以后有新版本时，agent 会在对话里提醒你更新，见 [README 的「更新」](../README.md#更新)。
 
+也可以直接填 npm 包名 `@dsh-skills-metrics/marcobis`。这样装的插件，以后在「插件」页就能直接更新，推荐用这种方式；截图里用的是 GitHub 地址，其余步骤完全一样。
+
 ![填写安装地址](images/02-add-plugin.jpg)
 
 ### 3. 点击「安装」，等待下载完成

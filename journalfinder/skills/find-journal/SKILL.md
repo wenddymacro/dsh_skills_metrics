@@ -64,11 +64,17 @@ without waiting for an answer:
 
 > The journalfinder plugin has a new version `<latest>` (installed: `<installed>`). Changes: `<changesUrl>`. Update now?
 
-Only after the user says yes, call the `plugin_manager` tool with `action: "install_bundle"` and
-`target` set to the file's `installSpec`; DSH asks the user to approve the call. Report the result,
-and pass on its `nextStep` when it has one (for example, restart DSH). If the call fails, give the
-user the `installSpec` to add by hand on the Plugins page. If the user declines, do not raise it again
-in this session. Never update without the user's yes.
+How to update depends on `updateMethod`. Never update without the user's yes, and if the user
+declines, do not raise it again in this session.
+
+- `plugins-page` (installed from npm): tell the user to open **Plugins**, find this plugin and click
+  its update button, choosing `<latest>`. Do not call `plugin_manager install_bundle`: DSH refuses it
+  for a package already installed from npm. If the page does not list `<latest>` yet, the npm mirror
+  has not caught up; try again later.
+- `install_bundle` (installed from GitHub): after the user says yes, call the `plugin_manager` tool
+  with `action: "install_bundle"` and `target` set to the file's `installSpec`; DSH asks the user to
+  approve the call. Report the result, and pass on its `nextStep` when it has one (for example,
+  restart DSH). If the call fails, give the user the `installSpec` to add by hand on the Plugins page.
 
 ## Workflow
 

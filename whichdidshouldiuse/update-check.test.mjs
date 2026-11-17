@@ -2,7 +2,7 @@
 // No network: GitHub is replaced by a fake fetch, and DSH_HOME by a temporary directory.
 
 import assert from 'node:assert/strict'
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { basename, dirname, join } from 'node:path'
 import { test } from 'node:test'
@@ -134,6 +134,70 @@ test('update: a corrupt status file is replaced, never thrown', () => withHome(a
   assert.equal(status.updateAvailable, false)
 }))
 
+test('update: dependency specs are classified the way pnpm saves them', () => {
+  for (const spec of ['^0.2.0', '0.2.0', '~0.2', 'latest', '>=0.2.0', 'npm:@dsh-skills-metrics/marcobis@0.2.0']) {
+    assert.equal(update.classifySpec(spec), 'registry', spec)
+  }
+  for (const spec of [
+    `github:${update.REPO}#${FOLDER}-v0.2.0&path:/${FOLDER}`,
+    `git+https://github.com/${update.REPO}.git#abc&path:/${FOLDER}`,
+    `https://codeload.github.com/${update.REPO}/tar.gz/abc#path:/${FOLDER}`,
+    `${update.REPO}#abc`,
+  ]) {
+    assert.equal(update.classifySpec(spec), 'git', spec)
+  }
+  for (const spec of [`link:/abs/${FOLDER}`, 'file:../x.tgz']) assert.equal(update.classifySpec(spec), 'link', spec)
+})
+
+/** A profile with the package installed (pnpm's hoisted layout) from `spec`; returns the package directory. */
+function fakeProfile(home, spec) {
+  const profile = join(home, 'profiles', 'p')
+  const dir = join(profile, 'node_modules', ...pkg.name.split('/'))
+  mkdirSync(dir, { recursive: true })
+  writeFileSync(join(profile, 'package.json'), JSON.stringify({ name: 'dsh-profile-p', dependencies: { [pkg.name]: spec } }))
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: pkg.name, version: '0.2.0' }))
+  return dir
+}
+
+test('update: an npm install is sent to the Plugins page with the npm spec', () => withHome(async (env, home) => {
+  const packageDir = fakeProfile(home, '^0.2.0')
+  assert.equal(await update.installSource(packageDir, pkg.name), 'registry')
+  const status = await update.checkForUpdate({
+    folder: FOLDER, packageName: pkg.name, installed: '0.2.0', packageDir,
+    fetch: fakeFetch({ refs: [tag(FOLDER, '0.3.0')] }).fetch, env, now: () => 0,
+  })
+  assert.equal(status.source, 'registry')
+  assert.equal(status.updateMethod, 'plugins-page')
+  assert.equal(status.updateAvailable, true)
+  assert.equal(status.installSpec, `${pkg.name}@0.3.0`)
+}))
+
+test('update: a GitHub install is updated with install_bundle and the tag address', () => withHome(async (env, home) => {
+  const packageDir = fakeProfile(home, `github:${update.REPO}#${FOLDER}-v0.2.0&path:/${FOLDER}`)
+  const status = await update.checkForUpdate({
+    folder: FOLDER, packageName: pkg.name, installed: '0.2.0', packageDir,
+    fetch: fakeFetch({ refs: [tag(FOLDER, '0.3.0')] }).fetch, env, now: () => 0,
+  })
+  assert.equal(status.source, 'git')
+  assert.equal(status.updateMethod, 'install_bundle')
+  assert.equal(status.installSpec, `github:${update.REPO}#${FOLDER}-v0.3.0&path:/${FOLDER}`)
+}))
+
+test('update: a local link install gets no offer, and an unreadable source falls back to GitHub', () => withHome(async (env, home) => {
+  const linked = fakeProfile(home, `link:/abs/${FOLDER}`)
+  const base = { folder: FOLDER, packageName: pkg.name, installed: '0.2.0', fetch: fakeFetch({ refs: [tag(FOLDER, '0.3.0')] }).fetch, env, now: () => 0 }
+  const link = await update.checkForUpdate({ ...base, packageDir: linked })
+  assert.equal(link.updateMethod, 'none')
+  assert.equal(link.updateAvailable, false)
+  const lone = join(home, 'elsewhere', 'pkg')
+  mkdirSync(lone, { recursive: true })
+  assert.equal(await update.installSource(lone, pkg.name), 'unknown')
+  assert.equal(await update.installSource(undefined, pkg.name), 'unknown')
+  const unknown = await update.checkForUpdate({ ...base, packageDir: lone })
+  assert.equal(unknown.updateMethod, 'install_bundle')
+  assert.equal(unknown.updateAvailable, true)
+}))
+
 test('update: the opt-out switch skips the network and the file', () => withHome(async (env) => {
   for (const value of ['0', 'false', 'OFF', 'no']) {
     const gh = fakeFetch({ refs: [tag(FOLDER, '9.0.0')] })
@@ -164,6 +228,7 @@ test('update: each SKILL.md tells the agent where the status file is and how to 
     assert.match(text, /plugin_manager/, `${name}/SKILL.md must name the plugin_manager tool`)
     assert.match(text, /install_bundle/)
     assert.match(text, /installSpec/)
+    assert.match(text, /plugins-page/, `${name}/SKILL.md must explain npm installs`)
   }
 })
 

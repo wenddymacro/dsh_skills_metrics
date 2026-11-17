@@ -1,0 +1,79 @@
+# Publish one plugin to npm when its release tag is pushed.
+#
+# Tag format: <plugin-folder>-v<version>, e.g. marcobis-v0.2.1. The version must equal
+# "version" in <plugin-folder>/package.json at the tagged commit.
+#
+# Needs the repository secret NPM_TOKEN: an npm automation (or granular, publish-enabled)
+# token of an account that can publish to the @dsh-skills-metrics scope.
+
+name: Publish plugin to npm
+
+on:
+  push:
+    tags:
+      - 'journalfinder-v*'
+      - 'marcobis-v*'
+      - 'whichdidshouldiuse-v*'
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+concurrency:
+  group: publish-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Read plugin and version from the tag
+        id: tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          folder="${TAG%-v*}"
+          version="${TAG##*-v}"
+          case "$folder" in
+            journalfinder|marcobis|whichdidshouldiuse) ;;
+            *) echo "::error::Unknown plugin folder '$folder' in tag $TAG"; exit 1 ;;
+          esac
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag $TAG does not end in -v<MAJOR.MINOR.PATCH>"; exit 1
+          fi
+          declared="$(node -p "require('./$folder/package.json').version")"
+          if [ "$declared" != "$version" ]; then
+            echo "::error::Tag $TAG says $version but $folder/package.json says $declared"; exit 1
+          fi
+          echo "folder=$folder" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Test
+        working-directory: ${{ steps.tag.outputs.folder }}
+        env:
+          DSH_SKILLS_METRICS_UPDATE_CHECK: '0'
+        run: node --test test.mjs
+
+      - name: Skip if this version is already on npm
+        id: published
+        working-directory: ${{ steps.tag.outputs.folder }}
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          if npm view "$name@${{ steps.tag.outputs.version }}" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "$name@${{ steps.tag.outputs.version }} is already published."
+          fi
+
+      - name: Publish
+        if: steps.published.outputs.already != 'true'
+        working-directory: ${{ steps.tag.outputs.folder }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance

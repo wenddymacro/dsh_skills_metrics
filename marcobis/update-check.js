@@ -6,18 +6,27 @@
  * the copies drift apart.
  *
  * A release of plugin `<folder>` is the git tag `<folder>-v<version>`, where `<version>` is
- * the `version` in `<folder>/package.json` at that tag. On load, the plugin asks GitHub for
- * its tags at most once per {@link TTL_MS}, then writes what it learnt to
+ * the `version` in `<folder>/package.json` at that tag; pushing the tag also publishes that
+ * version to npm (.github/workflows/publish.yml). On load, the plugin asks GitHub for its tags
+ * at most once per {@link TTL_MS}, then writes what it learnt to
  * `<DSH_HOME or ~/.dsh>/cache/dsh-skills-metrics/<folder>.json`. The plugin's SKILL.md tells
  * the agent to read that file once per session and, when `updateAvailable` is true, offer
- * the user the update through dsh's `plugin_manager` tool. Nothing is installed here.
+ * the update. Nothing is installed here.
+ *
+ * How the update is applied depends on where the profile installed the plugin from, read from
+ * the profile's package.json (`updateMethod` in the status file):
+ * - `plugins-page`: an npm registry install. DSH's own Plugins page lists newer versions and
+ *   updates it (the agent's `plugin_manager install_bundle` refuses an installed registry package).
+ * - `install_bundle`: a GitHub install, or a source that could not be read. The agent calls
+ *   `plugin_manager install_bundle` with `installSpec`, the release tag's GitHub address.
+ * - `none`: a local `link:`/`file:` checkout, which the developer updates; no offer is made.
  *
  * Set DSH_SKILLS_METRICS_UPDATE_CHECK=0 to turn the network check off.
  */
 
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 
 /** GitHub repository that publishes the release tags. */
 export const REPO = 'wenddymacro/dsh_skills_metrics'
@@ -75,6 +84,43 @@ export function latestRelease(refs, folder) {
 }
 
 /**
+ * Classify a dependency spec as pnpm saved it in the profile's package.json.
+ * @param {string} spec
+ * @returns {'registry' | 'git' | 'link'}
+ */
+export function classifySpec(spec) {
+  const text = String(spec).trim()
+  if (/^(link|file|workspace|portal):/.test(text)) return 'link'
+  if (/^(github|gitlab|bitbucket|git\+|git:|https?:|ssh:)/.test(text) || /^[\w.-]+\/[\w.-]+(#.*)?$/.test(text)) return 'git'
+  return 'registry'
+}
+
+/**
+ * Where the profile installed this package from: the nearest package.json above the package
+ * directory whose `dependencies` names the package.
+ * @param {string | undefined} packageDir - directory of the installed package.
+ * @param {string} packageName
+ * @returns {Promise<'registry' | 'git' | 'link' | 'unknown'>}
+ */
+export async function installSource(packageDir, packageName) {
+  if (!packageDir) return 'unknown'
+  let dir = dirname(packageDir)
+  for (let depth = 0; depth < 8; depth++) {
+    try {
+      const manifest = JSON.parse(await readFile(join(dir, 'package.json'), 'utf8'))
+      const spec = manifest?.dependencies?.[packageName]
+      if (typeof spec === 'string') return classifySpec(spec)
+    } catch {
+      // no readable package.json here; keep climbing
+    }
+    const parent = dirname(dir)
+    if (parent === dir) break
+    dir = parent
+  }
+  return 'unknown'
+}
+
+/**
  * Where the status of plugin `folder` is written.
  * @param {string} folder
  * @param {NodeJS.ProcessEnv} [env]
@@ -92,18 +138,26 @@ export function statusPath(folder, env = process.env) {
  * @param {string} fields.installed
  * @param {{ tag: string, version: string } | undefined} fields.latest
  * @param {number} fields.checkedAt - epoch milliseconds of the GitHub answer.
+ * @param {'registry' | 'git' | 'link' | 'unknown'} [fields.source] - where the profile installed it from.
  * @param {string} [fields.error]
  */
-export function buildStatus({ folder, packageName, installed, latest, checkedAt, error }) {
-  const updateAvailable = latest !== undefined && compareVersions(latest.version, installed) > 0
+export function buildStatus({ folder, packageName, installed, latest, checkedAt, source = 'unknown', error }) {
+  const updateMethod = source === 'registry' ? 'plugins-page' : source === 'link' ? 'none' : 'install_bundle'
+  const updateAvailable = updateMethod !== 'none' && latest !== undefined && compareVersions(latest.version, installed) > 0
+  let installSpec = null
+  if (latest) {
+    installSpec = source === 'registry' ? `${packageName}@${latest.version}` : `github:${REPO}#${latest.tag}&path:/${folder}`
+  }
   return {
     plugin: folder,
     package: packageName,
     installed,
     latest: latest?.version ?? null,
     tag: latest?.tag ?? null,
+    source,
+    updateMethod,
     updateAvailable,
-    installSpec: latest ? `github:${REPO}#${latest.tag}&path:/${folder}` : null,
+    installSpec,
     changesUrl: latest ? `https://github.com/${REPO}/commits/${latest.tag}/${folder}` : null,
     checkedAt: new Date(checkedAt).toISOString(),
     ...(error === undefined ? {} : { error }),
@@ -145,12 +199,13 @@ async function fetchRefs(folder, fetchImpl) {
  * @param {string} options.folder - plugin folder name, also the tag prefix.
  * @param {string} options.packageName - npm package name of the bundle.
  * @param {string} options.installed - `version` of the installed package.json.
+ * @param {string} [options.packageDir] - installed package directory, to read the install source.
  * @param {typeof fetch} [options.fetch]
  * @param {NodeJS.ProcessEnv} [options.env]
  * @param {() => number} [options.now]
  * @returns {Promise<object | undefined>} the status written, or undefined when the check is off or failed to write.
  */
-export async function checkForUpdate({ folder, packageName, installed, fetch: fetchImpl = globalThis.fetch, env = process.env, now = Date.now }) {
+export async function checkForUpdate({ folder, packageName, installed, packageDir, fetch: fetchImpl = globalThis.fetch, env = process.env, now = Date.now }) {
   try {
     if (/^(0|false|off|no)$/i.test(env[OPT_OUT_ENV]?.trim() ?? '')) return undefined
     const path = statusPath(folder, env)
@@ -177,7 +232,8 @@ export async function checkForUpdate({ folder, packageName, installed, fetch: fe
         latest = previous?.tag && previous?.latest ? { tag: previous.tag, version: previous.latest } : undefined
       }
     }
-    const status = buildStatus({ folder, packageName, installed, latest, checkedAt, error })
+    const source = await installSource(packageDir, packageName)
+    const status = buildStatus({ folder, packageName, installed, latest, checkedAt, source, error })
     await writeStatus(path, status)
     return status
   } catch {
