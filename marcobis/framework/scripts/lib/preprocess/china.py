@@ -61,6 +61,7 @@ def cumulative_to_period(
     freq: Literal["M", "Q"] = "M",
     *,
     jan_feb: JanFeb = "split",
+    require_monotone: bool = False,
 ) -> pd.Series:
     """把年内累计值（1–N 月 / 1–N 季累计）转成当期值。
 
@@ -75,19 +76,33 @@ def cumulative_to_period(
       - ``"combined"``：1 月记缺失，2 月记 1–2 月合计；
       - ``"nan"``：1、2 月都记缺失。
 
+    * ``require_monotone=True`` 时，某年已公布的累计值只要出现下降（本期 < 上期），就认为
+      这一年的"累计值"其实不是累计口径，整年的当期值都记缺失，不做差分。被剔除的年份记在
+      返回值的 ``attrs["nonmonotone_years"]``。只对不可能为负的流量（如财政支出）打开；
+      贸易差额、利润这类当期值可以为负的序列累计值本来就会下降，不要打开。
+
+      背景：国家数据平台"财政/国家财政预算支出"表 2020 年及以前 1–11 月的"累计值"多为
+      当月值（各年做法不一，2019 年还是混合的），直接差分会得到大量负的当月支出。
+
     Parameters
     ----------
     s : pd.Series
         累计值序列（水平值，如亿元）。**不要**用于累计增长率：增长率不能差分。
     freq : {"M", "Q"}
     jan_feb : {"split", "combined", "nan"}
+    require_monotone : bool
+        累计值年内不单调的年份整年记缺失（默认 False）。
     """
     _check_index(s)
     if freq not in ("M", "Q"):
         raise ValueError("freq 只能是 'M' 或 'Q'")
     s = regularize(s.astype(float), freq)
     out = pd.Series(np.nan, index=s.index, name=s.name, dtype=float)
+    dropped: list[int] = []
     for year, grp in s.groupby(s.index.year):
+        if require_monotone and (grp.dropna().diff() < 0).any():
+            dropped.append(int(year))
+            continue
         prev_val: float | None = 0.0  # 年初累计为 0
         prev_period = 0
         for ts, val in grp.items():
@@ -113,6 +128,9 @@ def cumulative_to_period(
             prev_val, prev_period = val, period
     out = out.sort_index()
     out.attrs = dict(s.attrs)
+    if require_monotone:
+        out.attrs["nonmonotone_years"] = dropped
+        return _record(out, f"cumulative_to_period(freq={freq}, jan_feb={jan_feb}, require_monotone=True)")
     return _record(out, f"cumulative_to_period(freq={freq}, jan_feb={jan_feb})")
 
 

@@ -79,6 +79,11 @@ def load_panel(panel: str) -> dict:
         for step in _steps(s.get("clean")):
             if step not in CLEAN_STEPS:
                 raise SystemExit(f"{path}：序列 {s['id']} 的 clean={step!r} 不受支持（可用 {CLEAN_STEPS}）")
+        if s.get("monotone") is not None:
+            if not isinstance(s["monotone"], bool):
+                raise SystemExit(f"{path}：序列 {s['id']} 的 monotone 只能是 true / false")
+            if "cumulative_to_period" not in _steps(s.get("clean")):
+                raise SystemExit(f"{path}：序列 {s['id']} 的 monotone 只能和 clean: cumulative_to_period 一起用")
     return spec
 
 
@@ -110,14 +115,15 @@ def full_calendar(index: pd.DatetimeIndex, freq: str) -> pd.DatetimeIndex:
     return pd.date_range(index.min(), index.max(), freq=f, name="date")
 
 
-def apply_clean(s: pd.Series, steps: list[str], freq: str, ytd: pd.Series | None = None) -> pd.Series:
+def apply_clean(s: pd.Series, steps: list[str], freq: str, ytd: pd.Series | None = None,
+                monotone: bool = False) -> pd.Series:
     for step in steps:
         if step == "none":
             continue
         if step == "cumulative_to_period":
             if freq == "A":
                 raise ValueError("年度数据不能做 cumulative_to_period")
-            s = china.cumulative_to_period(s, freq)
+            s = china.cumulative_to_period(s, freq, require_monotone=monotone)
         elif step == "fill_january":
             if freq != "M":
                 raise ValueError("fill_january 只适用于月度数据")
@@ -214,7 +220,8 @@ def update_panel(panel: str, *, only: set[str] | None, start: str | None,
                 ytd = None
                 if s.get("jan_feb_from"):
                     ytd, _ = client.fetch_series(s["catalog"], str(s["jan_feb_from"]), freq, start=s_start)
-                cleaned = apply_clean(series, _steps(s.get("clean")), freq, ytd=ytd)
+                cleaned = apply_clean(series, _steps(s.get("clean")), freq, ytd=ytd,
+                                      monotone=bool(s.get("monotone")))
             clean[sid] = cleaned
             meta_series[sid] = {
                 "label": s.get("label"), "group": s.get("group"),
@@ -225,11 +232,16 @@ def update_panel(panel: str, *, only: set[str] | None, start: str | None,
                 "jan_feb_from": s.get("jan_feb_from"),
                 "preprocess_applied": list(cleaned.attrs.get("preprocess_applied", [])),
                 "filled_january": cleaned.attrs.get("filled_january"),
+                "nonmonotone_years": cleaned.attrs.get("nonmonotone_years"),
                 "segments": meta.get("segments"),
                 "overlap_conflicts": meta.get("overlap_conflicts") or [],
                 "warnings": [str(w.message) for w in caught],
                 "note": meta.get("note"),
             }
+            if cleaned.attrs.get("nonmonotone_years"):
+                yrs = cleaned.attrs["nonmonotone_years"]
+                print(f"   ! {sid:<22} 累计值年内不单调，{len(yrs)} 年整年记缺失："
+                      f"{', '.join(map(str, yrs))}", flush=True)
             nn = cleaned.dropna()
             print(f"   ✓ {sid:<22} {len(nn):>4} 期  {nn.index.min().date() if len(nn) else '—'} – "
                   f"{nn.index.max().date() if len(nn) else '—'}  （{len(meta.get('segments') or [])} 段）",
