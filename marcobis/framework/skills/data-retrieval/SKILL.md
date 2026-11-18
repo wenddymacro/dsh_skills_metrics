@@ -655,7 +655,7 @@ FRED-MD 是主要的预置数据集，下面列出 VAR/BVAR 分析中最常用�
 | `fai_ytd_yoy` | 固定资产投资累计增速 | 1 | 投资 |
 | `re_investment` / `re_sales` | 房地产投资 / 新建商品房销售额（当月） | 5 | 房地产 |
 | `exports` / `imports` / `trade_balance` | 进出口（当月，千美元） | 5 / 5 / 1 | 外需 |
-| `fiscal_revenue` / `fiscal_expenditure` | 一般公共预算收支（当月） | 5 | 财政 |
+| `fiscal_revenue` / `fiscal_expenditure` | 一般公共预算收支（当月；支出 2021 年起才可用，见 `data/nbs_m/UPDATE.md`） | 5 | 财政 |
 | `m0` / `m1` / `m2`、`m1_yoy` / `m2_yoy` | 货币供应量期末值 / 同比 | 6 / 1 | 货币 |
 | `pmi_mfg` / `pmi_nonmfg` | 制造业 PMI / 非制造业商务活动指数 | 1 | 景气（已季调） |
 | `unemployment` | 全国城镇调查失业率（2018 年起） | 2 | 劳动力市场 |

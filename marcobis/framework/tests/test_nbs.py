@@ -278,6 +278,59 @@ def test_cumulative_to_period_quarterly():
     assert np.allclose(china.cumulative_to_period(cum, "Q").values, 5.0)
 
 
+def _fiscal_like():
+    """三年月度累计值：2019 年 1–11 月其实是当月值（不单调，12 月是全年数），
+    2020 年起 1–2 月合并公布、逐月单调。仿照国家财政预算支出表的口径问题。"""
+    v2019 = [500.0, 450.0, 600.0, 680.0, 770.0, 990.0, 800.0, 800.0, 980.0, 870.0, 1050.0, 9000.0]
+    v2020 = [np.nan] + [100.0 * m for m in range(2, 13)]
+    v2021 = [np.nan] + [120.0 * m for m in range(2, 13)]
+    return _monthly(v2019 + v2020 + v2021, start="2019-01-01")
+
+
+def test_cumulative_to_period_default_keeps_nonmonotone_years():
+    out = china.cumulative_to_period(_fiscal_like(), "M")
+    assert (out.loc["2019"] < 0).any()          # 默认不检查：差分出负值（这正是要防的情况）
+    assert "nonmonotone_years" not in out.attrs
+
+
+def test_cumulative_to_period_require_monotone_drops_whole_year():
+    out = china.cumulative_to_period(_fiscal_like(), "M", require_monotone=True)
+    assert out.loc["2019"].isna().all()          # 不单调的年份整年缺失，包括 12 月
+    assert out.attrs["nonmonotone_years"] == [2019]
+    assert not (out.dropna() < 0).any()
+    # 单调的年份照常换算，1–2 月合计平均拆分
+    assert np.allclose(out.loc["2020"].values, 100.0)
+    assert np.allclose(out.loc["2021"].values, 120.0)
+    assert "require_monotone=True" in out.attrs["preprocess_applied"][-1]
+
+
+def test_require_monotone_ignores_gaps_and_flat_months():
+    # 中间缺一个月、某月持平都不算下降
+    cum = _monthly([10.0, 20.0, np.nan, 40.0, 40.0, 50.0])
+    out = china.cumulative_to_period(cum, "M", require_monotone=True)
+    assert out.attrs["nonmonotone_years"] == []
+    assert out.loc["2020-05-01"] == 0.0 and out.loc["2020-06-01"] == 10.0
+    # 隔着缺失月份的下降也要抓到
+    bad = _monthly([10.0, 20.0, np.nan, 15.0, 30.0])
+    out = china.cumulative_to_period(bad, "M", require_monotone=True)
+    assert out.attrs["nonmonotone_years"] == [2020] and out.isna().all()
+
+
+def test_require_monotone_quarterly():
+    idx = pd.date_range("2020-03-01", periods=8, freq="QS-MAR")
+    cum = pd.Series([5.0, 10.0, 15.0, 20.0, 5.0, 4.0, 6.0, 30.0], index=idx)
+    out = china.cumulative_to_period(cum, "Q", require_monotone=True)
+    assert out.attrs["nonmonotone_years"] == [2021]
+    assert np.allclose(out.loc["2020"].values, 5.0) and out.loc["2021"].isna().all()
+
+
+def test_apply_clean_passes_monotone_flag():
+    mod = _load_update_module()
+    out = mod.apply_clean(_fiscal_like(), ["cumulative_to_period"], "M", monotone=True)
+    assert out.attrs["nonmonotone_years"] == [2019]
+    assert mod.apply_clean(_fiscal_like(), ["cumulative_to_period"], "M").attrs.get("nonmonotone_years") is None
+
+
 def test_fill_january_with_and_without_ytd():
     s = _monthly([np.nan, 6.0, 7.0])
     assert china.fill_january(s).iloc[0] == 6.0
@@ -396,6 +449,31 @@ def test_load_panel_rejects_numeric_keys(tmp_path, monkeypatch):
     monkeypatch.setattr(mod, "ROOT", tmp_path)
     with pytest.raises(SystemExit, match="加引号"):
         mod.load_panel("nbs_x")
+
+
+@pytest.mark.parametrize("extra, msg", [
+    ("    monotone: yes please\n", "true / false"),
+    ("    clean: none\n    monotone: true\n", "cumulative_to_period"),
+])
+def test_load_panel_validates_monotone(tmp_path, monkeypatch, extra, msg):
+    mod = _load_update_module()
+    d = tmp_path / "data" / "nbs_x"
+    d.mkdir(parents=True)
+    (d / "panel.yaml").write_text(
+        "id: nbs_x\nfreq: M\nname: x\nseries:\n  - id: a\n    catalog: x\n    key: 'k_1'\n" + extra,
+        encoding="utf-8")
+    monkeypatch.setattr(mod, "ROOT", tmp_path)
+    with pytest.raises(SystemExit, match=msg):
+        mod.load_panel("nbs_x")
+
+
+def test_shipped_fiscal_expenditure_checks_monotonicity():
+    """国家财政预算支出表 2020 年及以前的"累计值"多为当月值，面板必须打开 monotone 检测。"""
+    spec = _load_update_module().load_panel("nbs_m")
+    defs = {s["id"]: s for s in spec["series"]}
+    assert defs["fiscal_expenditure"].get("monotone") is True
+    # 贸易差额的累计值本来就可能下降，不能打开
+    assert not defs["trade_balance"].get("monotone")
 
 
 def test_partial_update_skips_derived_with_missing_inputs(tmp_path, monkeypatch, fake, capsys):
