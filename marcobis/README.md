@@ -52,16 +52,27 @@
 
 ## 安装
 
-**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
+**推荐：从 npm 安装。** 打开「插件 → 添加插件」，填入包名，点击「安装」，再点击「立即启用」。
+这样装的插件，dsh 的「插件」页能直接检查和更新版本。每一步的截图见 [使用指南](docs/GUIDE.md)。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#068e3125a3efbb3c3d158d7de692336e018041fc&path:/marcobis
+@dsh-skills-metrics/marcobis
 ```
 
-**命令行**（CLI 管理的 profile）：
+命令行（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#068e3125a3efbb3c3d158d7de692336e018041fc&path:/marcobis"
+dsh plugin --profile <profile> add @dsh-skills-metrics/marcobis
+```
+
+**也可以从 GitHub 安装**（npm 不通时用）。`#` 后面是版本标签，下面是目前最新的版本 0.2.0：
+
+```text
+github:wenddymacro/dsh_skills_metrics#marcobis-v0.2.0&path:/marcobis
+```
+
+```bash
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#marcobis-v0.2.0&path:/marcobis"
 ```
 
 从本地 checkout 安装（便于开发）：
@@ -70,9 +81,23 @@ dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#068e31
 dsh plugin --profile <profile> add "link:/abs/path/to/dsh_skills_metrics/marcobis"
 ```
 
-每一步的截图见 [使用指南](docs/GUIDE.md)。
-
 如果把已安装的插件换成另一个来源或版本，需要重启 DeepSeek Harness，新代码才会生效。
+
+## 更新
+
+插件会在 DeepSeek Harness 启动时，在后台查看本仓库有没有更新的发布标签（每 12 小时最多查一次，
+查不到或网络不通时不影响使用）。有新版本时，下次使用插件的会话里，agent 会用一句话提醒你，问要不要更新：
+
+- **从 npm 安装的**：agent 会请你到「插件」页点本插件的更新按钮。不用等提醒，随时也可以在那里检查更新。
+  新版本刚发布时，npm 镜像可能要过几分钟才同步。
+- **从 GitHub 安装的**：你同意后，agent 通过 dsh 的 `plugin_manager` 工具装新版本的标签地址，dsh 会再请你批准一次。
+  也可以自己把上面地址里的版本号换成新的标签（见 [Tags](https://github.com/wenddymacro/dsh_skills_metrics/tags)），重新「添加插件」。
+
+不会在你不知情的情况下更新。查询结果保存在 `~/.dsh/cache/dsh-skills-metrics/marcobis.json`；不想联网检查，就设置环境变量
+`DSH_SKILLS_METRICS_UPDATE_CHECK=0`。
+
+**从旧版本换过来**：0.2.0 之前的版本只能从 GitHub 提交号安装，没有更新提醒。在「插件」页卸载旧版，
+再按上面的方法从 npm 安装一次，以后就能直接在「插件」页更新。
 
 ## 使用
 
@@ -138,6 +163,7 @@ marcobis/
 ├── package.json            # dsh.bundle 声明，不打包任何依赖
 ├── cordis.patch.yml        # 挂载本包的插件
 ├── index.js                # 用 dsh 自带的 skill-filesystem provider 挂载 skills/
+├── update-check.js         # 后台检查新版本，写出更新状态文件
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
 ├── LICENSE, NOTICE         # 上游的 Apache-2.0 许可和 BIS 声明

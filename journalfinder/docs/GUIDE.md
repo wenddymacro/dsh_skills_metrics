@@ -28,13 +28,15 @@
 
 ### 2. 填写安装地址
 
-对话框接受 npm 包名、GitHub 仓库地址或本地目录路径。本插件在仓库的 `journalfinder/` 子目录里，所以地址要写明提交号和子目录：
+对话框接受 npm 包名、GitHub 仓库地址或本地目录路径。本插件在仓库的 `journalfinder/` 子目录里，所以地址要写明版本标签和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<提交号>&path:/journalfinder
+github:wenddymacro/dsh_skills_metrics#journalfinder-v0.2.0&path:/journalfinder
 ```
 
-把 `<提交号>` 换成要安装的那个版本的提交号。截图里用的是 `58ce7a8a0764aef9417c812ffcac9330cd20f7cf`，也就是合并 journalfinder 之后的 `main`。
+`#` 后面是版本标签，上面是目前最新的版本 0.2.0；也可以填提交号。截图是用更早的提交 `58ce7a8` 截的，安装过程完全一样。以后有新版本时，agent 会在对话里提醒你更新，见 [README 的「更新」](../README.md#更新)。
+
+也可以直接填 npm 包名 `@dsh-skills-metrics/journalfinder`。这样装的插件，以后在「插件」页就能直接更新，推荐用这种方式；截图里用的是 GitHub 地址，其余步骤完全一样。
 
 ![填写安装地址](images/02-add-plugin-address.jpg)
 

@@ -22,13 +22,15 @@
 
 ![添加插件对话框](images/02-add-plugin-dialog.jpg)
 
-本插件位于仓库的 `whichdidshouldiuse/` 子目录，所以地址里要写上提交号和子目录：
+本插件位于仓库的 `whichdidshouldiuse/` 子目录，所以地址里要写上版本标签和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<提交号>&path:/whichdidshouldiuse
+github:wenddymacro/dsh_skills_metrics#whichdidshouldiuse-v0.2.0&path:/whichdidshouldiuse
 ```
 
-`<提交号>` 换成你要安装的版本对应的提交，截图里用的是 `2ef71ac20f3fdad01109efdd953b5ae5f30b19b9`。
+`#` 后面是版本标签，上面是目前最新的版本 0.2.0；也可以填提交号。截图是用更早的提交 `2ef71ac` 截的，安装过程完全一样。以后有新版本时，agent 会在对话里提醒你更新，见 [README 的「更新」](../README.md#更新)。
+
+也可以直接填 npm 包名 `@dsh-skills-metrics/whichdidshouldiuse`。这样装的插件，以后在「插件」页就能直接更新，推荐用这种方式；截图里用的是 GitHub 地址，其余步骤完全一样。
 
 ![填入 GitHub 地址](images/03-github-address.jpg)
 

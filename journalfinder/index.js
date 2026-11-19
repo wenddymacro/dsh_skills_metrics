@@ -8,17 +8,25 @@
  * `ctx.loader.import()` instead of a bare import: a bundle's own `node_modules` is
  * empty, so `import '@deepseek-ai/...'` would fail to link, while the loader resolves
  * the provider exactly as a patch row's `name` is resolved.
+ *
+ * After mounting, it starts a background check for a newer release of this plugin
+ * (see update-check.js); the check never delays loading and never throws.
  */
 
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { checkForUpdate } from './update-check.js'
 
 /** Cordis plugin name, shown in diagnostics. */
 export const name = 'journalfinder-skill'
 
 /** `loader` imports the shipped provider; `skills` is the registry it registers on. */
 export const inject = ['loader', 'skills']
+
+/** Folder of this plugin in the repository, also the prefix of its release tags. */
+export const FOLDER = 'journalfinder'
 
 /** DSH's local filesystem skill provider, shipped with the harness. */
 export const PROVIDER = '@deepseek-ai/dsh-skill-filesystem'
@@ -66,4 +74,23 @@ export async function apply(ctx) {
     includeDefaultRoots: false,
     customSkillDirs: [dir],
   })
+
+  // Not awaited: loading must not wait for GitHub.
+  void startUpdateCheck()
+}
+
+/**
+ * Refresh this plugin's update status file from its own package.json.
+ * @param {object} [options] - passed through to checkForUpdate (tests inject fetch, env, now).
+ * @returns {Promise<object | undefined>} the status written, if any.
+ */
+export function startUpdateCheck(options = {}) {
+  const packageDir = dirname(fileURLToPath(import.meta.url))
+  let manifest
+  try {
+    manifest = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8'))
+  } catch {
+    return Promise.resolve(undefined)
+  }
+  return checkForUpdate({ folder: FOLDER, packageName: manifest.name, installed: manifest.version, packageDir, ...options })
 }

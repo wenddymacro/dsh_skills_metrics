@@ -9,6 +9,10 @@ import { test } from 'node:test'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import * as plugin from './index.js'
+import './update-check.test.mjs'
+
+// apply() starts a background update check; keep these tests off the network.
+process.env.DSH_SKILLS_METRICS_UPDATE_CHECK = '0'
 
 const root = dirname(fileURLToPath(import.meta.url))
 const skillDir = join(root, 'skills', 'which-did-should-i-use')
