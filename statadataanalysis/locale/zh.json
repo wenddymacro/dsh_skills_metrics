@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Stata 实证分析",
+    "description": "添加一个技能：用 Stata 跑完整实证流程——先读数据给出 Pre-Flight 报告，再写编号 do-file、批处理运行并检查 log，输出可发表的回归表（.tex/.rtf）和图（.pdf/.png），记录设定台账。需要 Stata 16 及以上版本。"
+  }
+}

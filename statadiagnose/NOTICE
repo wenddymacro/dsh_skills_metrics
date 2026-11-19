@@ -1,0 +1,8 @@
+statadiagnose
+Copyright (c) 2026 wenddymacro
+
+skills/stata-diagnose/SKILL.md is adapted from the `/diagnose` skill of
+claude-code-my-workflow by Pedro H. C. Sant'Anna
+(https://github.com/pedrohcgs/claude-code-my-workflow, commit fe70774),
+released under the MIT License; its licence text is in
+skills/stata-diagnose/UPSTREAM-LICENSE.txt.

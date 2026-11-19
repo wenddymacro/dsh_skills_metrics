@@ -1,0 +1,5 @@
+# Mount this package's plugin, which exposes skills/stata-diagnose to every session.
+# No path or config here: index.js locates skills/ from its own module URL.
+- insert:
+    - id: statadiagnose-skill
+      name: '@dsh-skills-metrics/statadiagnose'

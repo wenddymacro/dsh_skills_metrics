@@ -1,0 +1,41 @@
+{
+  "name": "@dsh-skills-metrics/statadiagnose",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DSH skill that finds the root cause of a wrong or failing Stata result: pin the symptom, reproduce, minimise, rank hypotheses, bisect with instrumentation, then fix at the source with a guard assertion.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",
+    "directory": "statadiagnose"
+  },
+  "icon": "./icon.svg",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "skills",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.1"
+  },
+  "scripts": {
+    "test": "node --test test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
