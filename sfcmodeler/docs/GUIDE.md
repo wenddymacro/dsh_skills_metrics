@@ -34,10 +34,10 @@
 本插件位于仓库的 `sfcmodeler/` 子目录，所以地址里要写明提交号和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#0cbf46af1cc23b5183816a81273942f50e05a543&path:/sfcmodeler
+github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/sfcmodeler
 ```
 
-截图里用的是 `0cbf46a`，也就是本指南写作时的 `main`。要装别的版本，把 `#` 后面换成对应的提交号即可。
+上面是目前最新的版本 `c3ee6ec`；要装别的版本，把 `#` 后面换成对应的提交号即可。截图里用的是更早的提交 `0cbf46a`，安装过程完全一样。
 
 ![填写安装地址](images/02-add-plugin.jpg)
 

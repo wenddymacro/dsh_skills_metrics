@@ -20,4 +20,4 @@
 dsh plugin --profile <profile> add "git+https://github.com/wenddymacro/dsh_skills_metrics.git#<commit>&path:/<插件文件夹>"
 ```
 
-各插件的依赖与用法见其文件夹下的 README。
+`<commit>` 换成要安装的提交号，目前最新的是 `c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47`。各插件的依赖与用法见其文件夹下的 README。

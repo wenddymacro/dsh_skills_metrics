@@ -25,10 +25,10 @@
 本插件位于仓库的 `whichdidshouldiuse/` 子目录，所以地址里要写上提交号和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<提交号>&path:/whichdidshouldiuse
+github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/whichdidshouldiuse
 ```
 
-`<提交号>` 换成你要安装的版本对应的提交，截图里用的是 `2ef71ac20f3fdad01109efdd953b5ae5f30b19b9`。
+上面是目前最新的版本 `c3ee6ec`；要装别的版本，把 `#` 后面换成对应的提交号。截图里用的是更早的提交 `2ef71ac`，安装过程完全一样。
 
 ![填入 GitHub 地址](images/03-github-address.jpg)
 

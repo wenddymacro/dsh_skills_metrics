@@ -22,10 +22,10 @@
 对话框接受 npm 包名、GitHub 仓库地址或本地目录路径。本插件位于仓库的 `statadataanalysis/` 子目录，地址里要写上提交号和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#fea1e496d187b5dc34d9e4b41789f0616ee583fa&path:/statadataanalysis
+github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/statadataanalysis
 ```
 
-这里用的是 `fea1e49`，也就是本插件合并进 `main` 时的提交。要装别的版本，把 `#` 后面换成对应的提交号即可。截图时插件还没合并，所以下图里提交号的位置是占位符 `<提交号>`。
+上面是目前最新的版本 `c3ee6ec`。要装别的版本，把 `#` 后面换成对应的提交号即可。截图时插件还没合并，所以下图里提交号的位置是占位符 `<提交号>`。
 
 ![填写安装地址](images/02-add-plugin.jpg)
 
