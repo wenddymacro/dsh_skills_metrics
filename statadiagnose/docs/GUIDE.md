@@ -30,10 +30,10 @@
 对话框接受 npm 包名、GitHub 仓库地址或本地目录路径。本插件位于仓库的 `statadiagnose/` 子目录，地址是：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<提交号>&path:/statadiagnose
+github:wenddymacro/dsh_skills_metrics#fea1e496d187b5dc34d9e4b41789f0616ee583fa&path:/statadiagnose
 ```
 
-`<提交号>` 换成你要安装的版本对应的提交。下图里填的是同仓库另一个插件 `statadataanalysis` 的地址，格式相同，只需把最后的子目录换成 `/statadiagnose`：
+这里用的是 `fea1e49`，也就是本插件合并进 `main` 时的提交。要装别的版本，把 `#` 后面换成对应的提交号即可。下图是截图时（插件尚未合并）填的同仓库另一个插件 `statadataanalysis` 的地址，提交号处是占位符；格式相同，实际填写时用上面的地址：
 
 ![填写安装地址](images/02-add-plugin.jpg)
 
