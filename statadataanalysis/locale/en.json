@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Stata data analysis",
+    "description": "Adds a skill that runs a full empirical workflow in Stata: a pre-flight data report, numbered do-files run in batch mode with log checks, publication-ready tables (.tex/.rtf) and figures (.pdf/.png), and a specification ledger. Requires Stata 16 or later."
+  }
+}

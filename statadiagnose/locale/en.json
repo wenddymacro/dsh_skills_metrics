@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Stata diagnose",
+    "description": "Adds a skill that finds the root cause of a wrong, changed or failing Stata result by pinning the symptom, reproducing it, cutting a minimal example, ranking hypotheses and bisecting with instrumentation; it fixes at the source and adds one guard assertion. Requires Stata 16 or later."
+  }
+}
