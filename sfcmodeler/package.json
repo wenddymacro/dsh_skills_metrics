@@ -5,6 +5,7 @@
   "type": "module",
   "description": "DSH skill for building, solving and shocking post-Keynesian stock-flow consistent (SFC) models with the SFCmodeler Python package (vendored, Apache-2.0).",
   "license": "Apache-2.0",
+  "author": "Wenli Xu",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",

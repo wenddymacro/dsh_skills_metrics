@@ -5,6 +5,7 @@
   "type": "module",
   "description": "DSH skill that finds the root cause of a wrong or failing Stata result: pin the symptom, reproduce, minimise, rank hypotheses, bisect with instrumentation, then fix at the source with a guard assertion.",
   "license": "MIT",
+  "author": "Wenli Xu",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",

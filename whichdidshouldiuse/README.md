@@ -60,6 +60,7 @@ whichdidshouldiuse/
 ├── index.js                # 用 dsh 自带的 skill-filesystem provider 挂载 skills/
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
+├── LICENSE                 # MIT，Wenli Xu
 ├── skills/which-did-should-i-use/
 │   ├── SKILL.md            # agent 的工作流程与结果解读
 │   ├── scripts/run_whichdid.sh   # 以 batch 模式运行 Stata，只输出报告和 return list
@@ -77,9 +78,19 @@ node --test test.mjs
 单元测试检查 manifest、patch、locale、SKILL frontmatter 和 `apply()` 的挂载方式；本机有 Stata 时，集成测试会用 4 个示例面板
 复现上游 README 中的分类结果（CLA、SAD、SFSD、HAD）。
 
-## 许可与致谢
+## 作者、许可与致谢
 
-插件代码采用 MIT 许可。`skills/which-did-should-i-use/stata/` 与 `data/` 来自上游
-[Credible-Answers/whichDIDshouldIuse](https://github.com/Credible-Answers/whichDIDshouldIuse)（提交 `d032764`，MIT 许可，版权归原作者所有）。
+作者：Wenli Xu。插件代码采用 MIT 许可，见 [LICENSE](LICENSE)。
+
+本插件基于上游 [Credible-Answers/whichDIDshouldIuse](https://github.com/Credible-Answers/whichDIDshouldIuse)
+（Trelles、de Chaisemartin、Quispe 的 Stata 命令，提交 `d032764`，MIT 许可）改进和扩展：
+
+- 把 Stata 命令做成 DeepSeek Harness 的 skill，用自然语言提问即可调用；
+- 新增 `run_whichdid.sh`：自动查找本机 Stata，以 batch 模式运行，去掉 Stata 启动信息，识别错误码，支持 `--describe`、`--prep`、`--if`；
+- 编写 agent 的工作流程和结果解读说明（`SKILL.md`），包括检查命令对样本做过的调整；
+- 新增测试，用 4 个教科书示例面板复现上游 README 的分类结果；
+- 新增中文图文使用指南。
+
+`skills/which-did-should-i-use/stata/` 与 `data/` 来自上游，版权归原作者所有。
 设计定义与估计量建议来自 de Chaisemartin & D'Haultfœuille (2026), *Causal Inference with Differences-in-Differences:
 Credible Answers to Hard Questions*, Princeton University Press。

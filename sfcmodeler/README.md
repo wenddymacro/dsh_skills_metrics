@@ -101,6 +101,16 @@ node --test test.mjs                                   # 插件外壳测试；�
 SFC_PYTHON=/path/to/python node --test test.mjs        # 指定 Python，运行四个示例的端到端测试
 ```
 
-## 许可
+## 作者、许可与致谢
 
-Apache License 2.0。SFCmodeler © Sam Levey，见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
+作者：Wenli Xu。采用 Apache License 2.0，见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
+
+本插件基于上游 [SFCmodeler](https://github.com/slevey087/SFCmodeler)（© Sam Levey，Apache-2.0，提交 `0e6a2c0`）改进和扩展：
+
+- 做成 DeepSeek Harness 的 skill，用自然语言描述模型或冲击即可调用；
+- 新增运行脚本 `scripts/sfc_run.py`：预热到稳态、按期施加参数冲击、自动跑基线并输出差值、逐期核对交易流量矩阵和资产负债表；
+- 根据上游 notebook 整理 Godley & Lavoie 的 SIM、PC、LP 示例和矩阵写法示例；
+- 编写中文 skill 说明和 API 速查；
+- 新增测试和中文图文使用指南。
+
+随附的上游 SFCmodeler 源代码未作修改，版权归原作者所有。
