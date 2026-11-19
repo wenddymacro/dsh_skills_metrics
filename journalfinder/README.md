@@ -26,17 +26,17 @@
 
 ## 安装
 
-**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`<commit>` 换成要安装的提交号。
+**桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 每一步的截图见 [使用指南](docs/GUIDE.md)。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<commit>&path:/journalfinder
+github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/journalfinder
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/journalfinder"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/journalfinder"
 ```
 
 从本地 checkout 安装（便于开发）：

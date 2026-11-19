@@ -31,10 +31,10 @@
 对话框接受 npm 包名、GitHub 仓库地址或本地目录路径。本插件在仓库的 `journalfinder/` 子目录里，所以地址要写明提交号和子目录：
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<提交号>&path:/journalfinder
+github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/journalfinder
 ```
 
-把 `<提交号>` 换成要安装的那个版本的提交号。截图里用的是 `58ce7a8a0764aef9417c812ffcac9330cd20f7cf`，也就是合并 journalfinder 之后的 `main`。
+上面是目前最新的版本 `c3ee6ec`；要装别的版本，把 `#` 后面换成对应的提交号。截图里用的是更早的提交 `58ce7a8`，安装过程完全一样。
 
 ![填写安装地址](images/02-add-plugin-address.jpg)
 

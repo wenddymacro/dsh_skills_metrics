@@ -55,13 +55,13 @@
 **桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#068e3125a3efbb3c3d158d7de692336e018041fc&path:/marcobis
+github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/marcobis
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#068e3125a3efbb3c3d158d7de692336e018041fc&path:/marcobis"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#c3ee6ec5ac7c4cf87d45d173c6c2d9235ed54f47&path:/marcobis"
 ```
 
 从本地 checkout 安装（便于开发）：
