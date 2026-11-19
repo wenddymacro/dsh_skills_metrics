@@ -3,6 +3,8 @@
 为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）开发的计量经济学插件集合。
 每类插件放在一个独立文件夹中，各自是一个可单独安装的 dsh 组合包（bundle）。
 
+作者：Wenli Xu。各插件基于上游开源项目改进和扩展，上游来源、许可和具体改动见各插件 README 的「作者、许可与致谢」。
+
 | 插件 | 作用 |
 |---|---|
 | [`whichdidshouldiuse/`](whichdidshouldiuse/) | 判断面板数据的 DID 设计类型（CLA、SAD、HAD、SFSD），并推荐估计量；基于 Stata 命令 `whichdidshouldiuse`。[图文使用指南](whichdidshouldiuse/docs/GUIDE.md) |

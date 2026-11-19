@@ -92,8 +92,17 @@ node --test test.mjs
 单元测试检查 manifest、patch、locale、SKILL frontmatter、`apply()` 的挂载方式和 `run_stata.sh` 的参数校验；本机有 Stata 时，
 集成测试会检查运行成功、报错定位（`r(111)`）、共线警告和版本查询。
 
-## 许可与致谢
+## 作者、许可与致谢
 
-MIT 许可。`skills/stata-data-analysis/SKILL.md` 改编自 Pedro H. C. Sant'Anna 的
-[claude-code-my-workflow](https://github.com/pedrohcgs/claude-code-my-workflow) 中的 `/data-analysis`（提交 `fe70774`，MIT 许可），
-改为 Stata 工作流并适配 DeepSeek Harness：去掉本机硬编码路径，改用自带的 `run_stata.sh` 运行 Stata。详见 [NOTICE](NOTICE)。
+作者：Wenli Xu。采用 MIT 许可，见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
+
+本插件基于上游 Pedro H. C. Sant'Anna 的 [claude-code-my-workflow](https://github.com/pedrohcgs/claude-code-my-workflow)
+中的 `/data-analysis`（提交 `fe70774`，MIT 许可）改进和扩展：
+
+- 把 R 版的分析流程改写为 Stata 工作流：编号 do-file、`reghdfe` / `esttab` / `coefplot` 出表出图、设定台账、按识别策略补齐检查；
+- 做成 DeepSeek Harness 的 skill，去掉本机硬编码路径；
+- 新增 `run_stata.sh`：自动查找本机 Stata，以 batch 模式运行 do-file，报告第一个错误码和共线、singleton、不收敛等警告，批处理 log 放在 do-file 旁边；
+- 根据实测补充注意事项（如注释里的 `/*` 会悄悄吞掉后面的代码）；
+- 新增测试和中文图文使用指南。
+
+上游许可原文见 `skills/stata-data-analysis/UPSTREAM-LICENSE.txt`。

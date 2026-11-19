@@ -6,8 +6,8 @@ Apache License 2.0，见 [`LICENSE`](LICENSE) 和 [`NOTICE`](NOTICE)），上游
 - 仓库：https://github.com/wenddymacro/marco-BIS
 - 提交：`8a51b9a4ff8953b0c7deb73de15883734c5bddfd`（2026-11-12）
 
-按 Apache License 2.0 第 4(b) 条，这里列出修改过的文件。这些修改由 DeepSeek Harness 插件
-`marcobis` 的维护者做出。BIS 的名称和标志未经 BIS 书面许可不得使用（见 NOTICE）。
+按 Apache License 2.0 第 4(b) 条，这里列出修改过的文件。这些修改由 Wenli Xu 做出，
+是对上游的改进和扩展。BIS 的名称和标志未经 BIS 书面许可不得使用（见 NOTICE）。
 
 ## 新增文件
 

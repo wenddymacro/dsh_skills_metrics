@@ -140,7 +140,7 @@ marcobis/
 ├── index.js                # 用 dsh 自带的 skill-filesystem provider 挂载 skills/
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
-├── LICENSE, NOTICE         # 上游的 Apache-2.0 许可和 BIS 声明
+├── LICENSE, NOTICE         # Apache-2.0 许可；NOTICE 含本插件声明和上游 BIS 声明原文
 ├── skills/                 # 挂载到 DSH 的 skill（只有这三个）
 │   ├── marco-bis/          # 入口：SKILL.md + scripts/marco_workspace.py
 │   ├── nbs-data/           # 国家统计局数据
@@ -184,8 +184,18 @@ python3 -m pytest tests/test_nbs.py --runslow    # 包含联网测试
 
 逐文件的修改清单见 [`framework/MODIFICATIONS.md`](framework/MODIFICATIONS.md)。
 
-## 许可与致谢
+## 作者、许可与致谢
 
-上游框架 © 2026 Bank for International Settlements，采用 [Apache-2.0](LICENSE) 许可，见 [`NOTICE`](NOTICE)。
-本插件的修改与新增部分同样以 Apache-2.0 发布。BIS 的名称和标志未经其书面许可不得使用；本插件提及 BIS 仅为说明来源。
+作者：Wenli Xu。采用 Apache-2.0 许可，见 [LICENSE](LICENSE) 和 [`NOTICE`](NOTICE)。
+
+本插件基于上游 MaRCo@BIS（© 2026 Bank for International Settlements，Apache-2.0；Lombardi、Park、Perez-Cruz，
+BIS Working Papers No. 1395）改进和扩展：
+
+- 全部中文化，并做成 DeepSeek Harness 插件；
+- 新增国家统计局数据层（`nbs-data`）：月度、季度、年度面板的下载与清洗，累计值换算、1–2 月合并处理、分段表拼接；
+- 新增 Global Macro Database 全球数据层（`gmd-data`）；
+- 新增测试和中文图文使用指南。
+
+修改过的文件按 Apache-2.0 第 4(b) 条列在 [`framework/MODIFICATIONS.md`](framework/MODIFICATIONS.md)。
+BIS 的名称和标志未经其书面许可不得使用；本插件提及 BIS 仅为说明来源。
 国家统计局数据的使用遵守国家统计局网站的相关规定。引用研究方法时请引用上游的 BIS 工作论文。

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "DSH skill that runs a full empirical workflow in Stata: pre-flight data report, numbered do-files, batch runs with log checks, and publication-ready tables and figures.",
   "license": "MIT",
+  "author": "Wenli Xu",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",

@@ -1,11 +1,11 @@
 sfcmodeler · DSH 插件
-Copyright 2026 dsh_skills_metrics 贡献者
+Copyright 2026 Wenli Xu
 
 本插件随附 SFCmodeler（skills/sfc-modeler/vendor/SFCmodeler/），
 作者 Sam Levey，上游仓库 https://github.com/slevey087/SFCmodeler ，
 采用 Apache License 2.0（见 LICENSE 与 skills/sfc-modeler/vendor/LICENSE）。
 
 随附的是上游提交 0e6a2c02aed04e6a5b9d243e9e328dd595ebc9bd（2026-11-15）的 SFCmodeler/ 目录，
-源代码未作修改。本插件新增的内容为：DSH 插件外壳（package.json、index.js、cordis.patch.yml、
+源代码未作修改。本插件基于 SFCmodeler 改进和扩展，新增的内容为：DSH 插件外壳（package.json、index.js、cordis.patch.yml、
 locale/、icon.svg、test.mjs）、中文 skill 说明（SKILL.md、reference.md）、
 运行脚本（scripts/）以及根据上游 notebook 整理的示例模型（examples/）。

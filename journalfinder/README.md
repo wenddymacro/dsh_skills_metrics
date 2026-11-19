@@ -75,6 +75,7 @@ journalfinder/
 ├── index.js                # 用 dsh 自带的 skill-filesystem provider 挂载 skills/
 ├── locale/{en,zh}.json     # 插件管理器中显示的标题与描述
 ├── icon.svg
+├── LICENSE                 # MIT，Wenli Xu
 ├── docs/                   # 图文使用指南、示例稿件、配图
 ├── skills/find-journal/
 │   ├── SKILL.md            # agent 的工作流程、参数速查与报告格式
@@ -93,11 +94,19 @@ node --test test.mjs
 单元测试检查 manifest、patch、locale、SKILL frontmatter 和 `apply()` 的挂载方式；本机有 Python 3.10+ 时，
 集成测试会从任意工作目录运行关键词查询、UTD24 筛选和稿件解析，确认脚本能找到插件自带的数据。
 
-## 许可与致谢
+## 作者、许可与致谢
 
-插件代码采用 MIT 许可。`skills/find-journal/scripts/` 与 `data/` 来自
-[wenddymacro/mskills](https://github.com/wenddymacro/mskills) 的 JournalFinder（分支 `claude/blissful-maxwell-2a79mr`，提交 `776f262`），
-它 fork 自 [alexishuang1901-hub/journal-finder](https://github.com/alexishuang1901-hub/journal-finder)（MIT，版权归 journal-finder contributors），
-感谢原作者。FT50 / UTD24 / AJG 2024 名单快照取自 [wosaide/wosaide-journal-lists](https://github.com/wosaide/wosaide-journal-lists)。
-完整来源见 [`skills/find-journal/references/ACKNOWLEDGMENTS.md`](skills/find-journal/references/ACKNOWLEDGMENTS.md)
+作者：Wenli Xu。插件代码采用 MIT 许可，见 [LICENSE](LICENSE)。
+
+本插件基于上游 [alexishuang1901-hub/journal-finder](https://github.com/alexishuang1901-hub/journal-finder)
+（MIT，版权归 journal-finder contributors）改进和扩展，经由 [wenddymacro/mskills](https://github.com/wenddymacro/mskills)
+的 JournalFinder（分支 `claude/blissful-maxwell-2a79mr`，提交 `776f262`）：
+
+- 新增 FT50、UTD24、ABS（AJG 2024）标注，以及 `--ft50-only`、`--utd24-only`、`--min-abs` 筛选和档次加权；
+- 新增整篇稿件（PDF / Word / TXT）解析和期刊字数限制检查；
+- 商科名单改用 [wosaide/wosaide-journal-lists](https://github.com/wosaide/wosaide-journal-lists) 的快照；
+- 做成 DeepSeek Harness 的 skill，脚本从任意工作目录都能找到插件自带的数据；
+- 新增测试和中文图文使用指南。
+
+感谢原作者。完整来源和修改清单见 [`skills/find-journal/references/ACKNOWLEDGMENTS.md`](skills/find-journal/references/ACKNOWLEDGMENTS.md)
 和 [`journal-lists-SOURCE.md`](skills/find-journal/references/journal-lists-SOURCE.md)。
