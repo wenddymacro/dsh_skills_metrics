@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "StatsClaw 统计软件开发团队",
+    "description": "添加 StatsClaw 多角色团队：组长 preset 调度规划、编码、测试、仿真、文档、审查六个角色，三份规格（spec.md / test-spec.md / sim-spec.md）互相隔离，代码、测试和蒙特卡洛仿真各自独立验证后再给出能否交付的结论。在本地处理 R、Python、Stata、Julia 等项目，不需要 GitHub 账号。语言包可插拔：完整的 Stata 语言包（ado / Mata 约定、cscript 认证脚本对照基准命令、SMCL 帮助文件与 .pkg 检查、27 条静默错误清单）和 Python 语言包，并可写入你自己的维护者规范。"
+  }
+}

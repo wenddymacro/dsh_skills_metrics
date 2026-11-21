@@ -1,0 +1,10 @@
+v 3
+d mycmd: one-line description of the package
+d
+d Longer description (optional).
+d
+d Author: (supplied by the package author)
+d Distribution-Date: 20261121
+d License: MIT
+f mycmd.ado
+f mycmd.sthlp

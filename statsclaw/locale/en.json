@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "StatsClaw statistical package team",
+    "description": "Adds the StatsClaw agent team for statistical software: a leader preset that dispatches planner, builder, tester, simulator, scriber and reviewer presets with isolated specs (spec.md / test-spec.md / sim-spec.md), so code, tests and Monte Carlo studies are verified independently before a ship verdict. Works locally on R, Python, Stata, Julia and other projects; no GitHub account needed. Pluggable language packs: a full Stata pack (ado/Mata conventions, cscript certification against benchmark commands, SMCL help and .pkg checks, 27 silent-error pitfalls) and a Python pack, plus maintainer files for your own conventions."
+  }
+}
