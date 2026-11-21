@@ -1,0 +1,7 @@
+statsclaw
+Copyright (c) 2026 Wenli Xu
+
+This plugin is based on, and adapts and extends, StatsClaw by Tianzhu Qin and
+Yiqing Xu (https://github.com/statsclaw/statsclaw, commit 3de2edf), released
+under the MIT License; its licence text is in
+skills/statsclaw/UPSTREAM-LICENSE.txt.

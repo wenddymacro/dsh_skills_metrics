@@ -1,0 +1,43 @@
+{
+  "name": "@dsh-skills-metrics/statsclaw",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DSH bundle that brings the StatsClaw agent team to statistical package development: a leader preset dispatches planner, builder, tester, simulator, scriber and reviewer presets with isolated specs, and an entry skill runs the same workflow serially when the team is unavailable.",
+  "license": "MIT",
+  "author": "Wenli Xu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wenddymacro/dsh_skills_metrics.git",
+    "directory": "statsclaw"
+  },
+  "icon": "./icon.svg",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "skills",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.1"
+  },
+  "scripts": {
+    "build": "node scripts/build-patch.mjs",
+    "test": "node --test test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
