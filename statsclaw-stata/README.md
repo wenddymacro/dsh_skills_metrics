@@ -63,13 +63,13 @@ python3 skills/statsclaw-stata/scripts/stata_pkg_check.py [--json] <项目目录
 **桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#<commit>&path:/statsclaw-stata
+github:wenddymacro/dsh_skills_metrics#5e9104cf4d4d6a3345ce2a938e7e9a321da773a1&path:/statsclaw-stata
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#<commit>&path:/statsclaw-stata"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#5e9104cf4d4d6a3345ce2a938e7e9a321da773a1&path:/statsclaw-stata"
 ```
 
 从本地 checkout 安装（便于开发）：
