@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "StatsClaw for Stata",
+    "description": "Adds the StatsClaw agent team for Stata package development: a leader preset dispatches planner, builder, tester, simulator, scriber and reviewer presets with isolated specs. Builds ado/Mata commands with proper r()/e() returns, validates them with certification scripts against benchmark commands, runs Monte Carlo studies, writes SMCL help files and checks .pkg/stata.toc packaging before a ship verdict. Requires Stata 16 or later; no GitHub account needed."
+  }
+}

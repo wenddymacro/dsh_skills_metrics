@@ -14,6 +14,7 @@
 | [`statadataanalysis/`](statadataanalysis/) | 用 Stata 跑完整实证流程：先读数据给出 Pre-Flight 报告，再写编号 do-file、批处理运行并检查 log，输出可发表的回归表（.tex/.rtf）和图，记录设定台账；改编自 claude-code-my-workflow 的 `/data-analysis`。[图文使用指南](statadataanalysis/docs/GUIDE.md) |
 | [`statadiagnose/`](statadiagnose/) | 用"症状 → 复现 → 最小化 → 假设 → 插桩 → 修复"的流程找出 Stata 结果出错、报错或复现不了的根本原因，专查类型、缺失值比较、merge m:m、权重、共线、不收敛等静默错误；改编自 claude-code-my-workflow 的 `/diagnose`。[图文使用指南](statadiagnose/docs/GUIDE.md) |
 | [`statsclaw/`](statsclaw/) | 统计软件包开发团队：组长 preset 调度规划、编码、测试、仿真、文档、审查六个角色 preset，spec.md / test-spec.md / sim-spec.md 互相隔离，代码、测试和蒙特卡洛仿真独立验证后由审查者给出能否交付的结论；支持 R、Python、Stata、Julia 等，不需要 GitHub；基于 StatsClaw。 |
+| [`statsclaw-stata/`](statsclaw-stata/) | StatsClaw 的 Stata 专用版：同样的组长 + 六角色团队，手册按 Stata 命令包开发写深——规格写到 `syntax` 行、e()/r() 返回值和错误码，测试用 `cscript` 认证脚本对照 regress、ivregress、reghdfe 等基准命令，附 27 条静默错误清单、`stata_pkg_check.py` 打包检查和 sthlp / pkg 模板；可与通用版同时安装。 |
 
 ## 安装某个插件
 
