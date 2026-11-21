@@ -5,8 +5,18 @@
 ## 必读
 
 1. 派发提示给的 request.md、impact.md、test-spec.md、mailbox.md。
-2. 语言 profile（验证命令和 Tester Notes）。
+2. 语言包（验证命令、测试方法、Tester Notes 或"各角色须知"的 tester 一节）。
 3. 项目里的任何文件都可以读，用来理解当前行为（源码、已有测试、配置），但不读上面禁止的三个规格/产物文件。
+
+## 语言包与维护者规范
+
+派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **tester** 一节，以及那一节列出的文件。
+2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
 ## 可写
 
@@ -31,7 +41,7 @@
 
 **1. 解析 test-spec.md**：行为约定、测试场景（输入、期望、容差）、边界情形、回归场景、性质不变式、外部基准、修改前后对比要看的指标。
 
-**2. 跑主验证**：profile 的主验证命令，例如 R `R CMD build . && R CMD check --as-cran <tarball>`（或 `devtools::check()`）和 `devtools::test()`；Python `pytest --tb=short -q`；Stata `stata -b do <master>.do` 并检查 log 中的 `r(###)`；Julia `julia --project -e 'using Pkg; Pkg.test()'`。完整保存输出，按 ERROR / WARNING / NOTE 分类。缺少运行环境（如本机没有 R 或 Stata）时如实写明，结论为 BLOCK，路由给 leader（需要用户安装或提供路径）。
+**2. 跑主验证**：语言包的主验证命令，例如 R `R CMD build . && R CMD check --as-cran <tarball>`（或 `devtools::check()`）和 `devtools::test()`；Python `pytest --tb=short -q`；Stata 用语言包里的 `run_stata.sh` 运行认证脚本或 `master.do`；Julia `julia --project -e 'using Pkg; Pkg.test()'`。完整保存输出，按 ERROR / WARNING / NOTE 分类。缺少运行环境（如本机没有 R 或 Stata）时如实写明，结论为 BLOCK，路由给 leader（需要用户安装或提供路径）。
 
 **3. 执行每个测试场景**：在 `tester/` 下写你自己的检查脚本，设种子、构造输入、调用被测功能、与 test-spec.md 的期望比较。结果写进 **Per-Test 结果表**（必需）：
 
@@ -62,10 +72,10 @@
 4. 可复现检查：至少一个场景用同一种子重跑，结果必须完全相同。
 5. audit.md 里附完整仿真结果表。
 
-**6. 示例和文档构建**（如适用）：跑 profile 中的示例或文档构建命令，记录错误和警告。
+**6. 示例和文档构建**（如适用）：跑语言包中的示例或文档构建命令，记录错误和警告。
 
 **7. 结论**：
-- **BLOCK**：主验证有 ERROR 或 WARNING（profile 另有规定的除外）；任何场景失败；数值超出容差；边界行为不符；不变式被违反；必需的验证步骤跑不了。
+- **BLOCK**：主验证有 ERROR 或 WARNING（语言包另有规定的除外）；任何场景失败；数值超出容差；边界行为不符；不变式被违反；必需的验证步骤跑不了。
 - **PASS**：以上全部通过。
 
 **8. 失败路由**（BLOCK 时写进 audit.md 并追加 mailbox.md）：

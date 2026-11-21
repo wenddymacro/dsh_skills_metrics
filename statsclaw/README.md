@@ -33,7 +33,29 @@
 
 三条流水线各自独立得到一致结果，才算可信。这就是 StatsClaw 的"对抗式验证"。
 
-支持的工作流：代码修改、仅文档、仿真 + 代码、仅仿真、仅验证、仅审查，以及小改动的简化流程（需要你确认）。语言 profile 有 R、Python、Stata、Julia、TypeScript、Go、Rust、C、C++，按项目里的标志文件自动识别。
+支持的工作流：代码修改、仅文档、仿真 + 代码、仅仿真、仅验证、仅审查、小改动的简化流程（需要你确认），以及发布检查（SSC / PyPI / CRAN 发布前的打包核对）。
+
+## 语言包与维护者规范
+
+角色手册是通用的，语言相关的内容放在 `skills/statsclaw/references/profiles/` 的**语言包**里，按项目里的标志文件自动选择：
+
+| 语言包 | 形式 | 内容 |
+|---|---|---|
+| **Stata** `profiles/stata/` | 目录 | 编码约定（ado / Mata 骨架、eclass/rclass、错误码、数值、随机数）、验证方法（`cscript` 认证脚本、对照 `regress` / `ivregress` / `reghdfe` 等基准命令、`git archive` 取旧版做前后对比、临时目录 `net install`）、SMCL 帮助文件与 `.pkg` / `stata.toc` 打包、27 条静默错误清单、仿真写法（`simulate` / `postfile`）、`run_stata.sh`、`stata_pkg_check.py`、认证脚本 / sthlp / pkg 模板，以及**每个角色的 Stata 须知** |
+| **Python** `profiles/python/` | 目录 | 上游的 Python profile，加开工检查（环境工具识别）、写入范围建议、仿真注意事项和发布检查（build、twine check、临时环境安装） |
+| R、Julia、TypeScript、Go、Rust、C、C++ | 单个文件 | 上游 StatsClaw 的 profile（R 有完整的 CRAN 提交清单） |
+
+**维护者规范**是你自己的习惯，优先级高于语言包：
+
+| 文件 | 写什么 |
+|---|---|
+| `profiles/maintainer.md` | 跨语言：作者与许可、版本号规则、提交习惯、默认容差、文档语言、发布流程 |
+| `profiles/stata/maintainer.md` | 你维护的 Stata 命令：目录布局、文件头和版本格式、编码和返回值习惯、认证脚本写法、帮助文件习惯、发布流程、踩过的坑 |
+| `profiles/python/maintainer.md` | 你维护的 Python 包：布局与工具链、版本来源、API 风格、数值断言默认容差、基准包、文档和发布流程 |
+
+三个文件目前是带提纲的空模板，第一行有 `statsclaw:maintainer-template 未填写` 标记，角色会跳过它们；填写后删掉这一行即生效。
+
+规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 角色手册的通用做法。**规格隔离和容差完整性两条规则不受任何规范覆盖。**
 
 ## 三种运行模式
 
@@ -53,7 +75,9 @@
 ## 依赖
 
 - DeepSeek Harness ≥ 0.2.1-rc.1。团队模式要用到 DSH 自带的 agent preset、subagent（进程内 spawn）和 persona 插件，桌面版默认都有。
-- 目标项目所用语言的运行环境，例如 R（`devtools`、`testthat`）、Python（`pytest`）、Stata、Julia。缺少运行环境时测试者会如实报告，组长会请你安装或提供路径。
+- 目标项目所用语言的运行环境，例如 Stata 16+（自动查找，找不到时设置 `STATA_BIN`）、Python（`pytest` 等）、R（`devtools`、`testthat`）。缺少运行环境时测试者会如实报告，组长会请你安装或提供路径。
+- Stata 包的静态检查 `stata_pkg_check.py` 需要 Python 3（只用标准库）。
+- 缺少第三方包（SSC、CRAN、PyPI）时，团队会告诉你缺什么，**不会自动安装**。
 - 读 PDF 论文时会用 `pdftotext` 或 Python 的 `pypdf` / `pdfplumber`；读 Word 用 `pandoc` 或 `python-docx`。都没有时规划者会请你提供文字版。
 
 ## 安装
@@ -107,7 +131,12 @@ statsclaw/
 │   ├── SKILL.md             # 组长协议：模式判断、开工步骤、工作流、派发模板、关口、信号、收尾
 │   ├── references/
 │   │   ├── roles/           # 六个角色的工作手册（同时是角色 preset 的人设）
-│   │   ├── profiles/        # 九种语言的识别标志、验证命令和编码约定
+│   │   ├── profiles/
+│   │   │   ├── maintainer.md        # 跨语言维护者规范（模板）
+│   │   │   ├── stata/               # Stata 语言包：profile.md、maintainer.md、四份参考、simulation.md、
+│   │   │   │                        #   run_stata.sh、stata_pkg_check.py、templates/
+│   │   │   ├── python/              # Python 语言包：profile.md、maintainer.md
+│   │   │   └── r-package.md …       # 其余语言的单文件 profile
 │   │   ├── artifacts.md     # 运行目录布局和每个产物的必备内容
 │   │   └── simulation-study.md
 │   ├── templates/           # status.md、log-entry.md、ARCHITECTURE.md
@@ -127,7 +156,7 @@ node scripts/build-patch.mjs
 node --test test.mjs
 ```
 
-检查 manifest、patch 与生成器输出一致、preset 的 id 和顺序、派发工具只允许派给六个角色、只有组长能派发和提问、审查者不能编辑文件、人设里没有会被 DSH 当作变量解析的 `{{`、角色手册写明了隔离规则、skill 引用的文件都存在，以及 `apply()` 的挂载方式。
+检查 manifest、patch 与生成器输出一致、preset 的 id 和顺序、派发工具只允许派给六个角色、只有组长能派发和提问、审查者不能编辑文件、人设里没有会被 DSH 当作变量解析的 `{{`、角色手册写明了隔离规则和语言包优先级、语言包的文件齐全、维护者模板带未填写标记、skill 引用的文件都存在、`apply()` 的挂载方式，以及 `stata_pkg_check.py` 在干净包、问题包和模板上的结果和 `run_stata.sh` 的参数校验；本机有 Stata 时还会用认证脚本模板实际跑一次。
 
 这些是离线检查。多角色调度需要在 DSH 桌面版里实际跑一次才能确认。
 
@@ -142,6 +171,9 @@ node --test test.mjs
 - 去掉对 GitHub 的依赖（workspace 仓库、brain 共享库、凭证检查、shipper、issue 巡检），运行记录放在项目内的 `.statsclaw/`；
 - 用写入范围划分和基线快照代替 git worktree 隔离；
 - 新增子代理模式和串行模式，在没有组长 preset 的会话里也能用；
+- 把语言 profile 改成可插拔的语言包，新增完整的 Stata 语言包（编码约定、认证脚本验证、帮助文件与打包、静默错误清单、仿真写法、`stata_pkg_check.py` 和模板）和 Python 语言包的开工与发布检查；
+- 新增维护者规范层（跨语言、Stata、Python），优先级高于语言包，但不能覆盖隔离和容差规则；
+- 新增发布检查工作流；`run_stata.sh` 复用本仓库 `statadataanalysis` 插件，静默错误清单部分整理自本仓库 `statadiagnose` 插件；
 - 新增从角色手册生成 patch 的脚本和测试。
 
 上游许可原文见 `skills/statsclaw/UPSTREAM-LICENSE.txt`。

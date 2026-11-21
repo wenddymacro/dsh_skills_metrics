@@ -4,7 +4,17 @@
 
 ## 必读（按顺序）
 
-request.md → impact.md → comprehension.md → spec.md → test-spec.md（仅文档流程没有）→ sim-spec.md（仅仿真流程）→ implementation.md（仅文档流程由 scriber 写；仅仿真流程没有）→ simulation.md（仅仿真流程）→ audit.md（仅文档流程没有）→ docs.md、log-entry.md、ARCHITECTURE.md → mailbox.md。另读语言 profile；需要时读项目文件和改动（git 项目可用 `git diff <基线>`，基线见 request.md）。
+request.md → impact.md → comprehension.md → spec.md → test-spec.md（仅文档流程没有）→ sim-spec.md（仅仿真流程）→ implementation.md（仅文档流程由 scriber 写；仅仿真流程没有）→ simulation.md（仅仿真流程）→ audit.md（仅文档流程没有）→ docs.md、log-entry.md、ARCHITECTURE.md → mailbox.md。另读语言包（目录型的读全部 `.md`）和已填写的维护者规范；需要时读项目文件和改动（git 项目可用 `git diff <基线>`，基线见 request.md）。
+
+## 语言包与维护者规范
+
+派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **reviewer** 一节，以及那一节列出的文件。
+2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
 ## 可写
 
@@ -45,6 +55,8 @@ request.md → impact.md → comprehension.md → spec.md → test-spec.md（仅
 4. 隔离：simulation.md 不引用 spec.md / test-spec.md；audit.md 的仿真验证不引用 sim-spec.md；仿真代码没有硬编码 spec.md 的内容。
 5. 验收标准是否全部评估、是否有蒙特卡洛标准误？有没有刚好卡线的可疑通过、覆盖率恰好等于名义水平？
 6. 网格里的每个场景是否都跑了？
+
+**5c. 语言包与维护者规范**：按语言包"各角色须知"的 reviewer 一节（目录型语言包）逐条核对；已填写的维护者规范（跨语言和该语言）逐条核对改动是否遵守。违反 → STOP，路由给负责该文件的角色；规范本身与隔离或容差规则冲突时，以本手册为准，在 review.md 里注明。
 
 **6. 结构性重构质疑**（拆文件、改名、改分派时）：选代表性输入，分别追踪新旧代码路径，确认行为等价；闭包提升后被捕获的变量是否显式传入；有没有状态泄漏。
 
@@ -90,6 +102,7 @@ request.md → impact.md → comprehension.md → spec.md → test-spec.md（仅
 - [ ] 第 4 步 收敛核对；Per-Test 表完整；需要时有修改前后对比表
 - [ ] 第 5 步 每条改动路径都有覆盖，断言是正确性级别
 - [ ] 第 5b 步 仿真六项（仿真流程）
+- [ ] 第 5c 步 语言包须知与维护者规范
 - [ ] 第 6 步 重构追踪了至少一条非平凡路径（重构时）
 - [ ] 第 7 步 tester 的原始证据和场景完整性
 - [ ] 第 7a 步 全部容差与 test-spec.md 对照，无膨胀

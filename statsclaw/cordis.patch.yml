@@ -127,8 +127,18 @@
 
                 1. 派发提示给的 request.md、impact.md、mailbox.md。
                 2. **用户上传的全部文件**（论文 PDF、Word、tex、txt、带公式的图片），完整读，不要只扫一眼。PDF 用 `pdftotext -layout` 或 Python（`pypdf` / `pdfplumber`）提取；Word 用 `pandoc` 或 `python-docx`；图片用读图工具。提取失败就在 comprehension.md 里说明，并 HOLD 请用户提供文字版。
-                3. 语言 profile；impact.md 里列出的现有源码（只读）。
+                3. 语言包和维护者规范（见下节）；impact.md 里列出的现有源码（只读）。
                 4. 仿真流程还要读派发提示给的 simulation-study.md。
+
+                ## 语言包与维护者规范
+
+                派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+                1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **planner** 一节，以及那一节列出的文件。
+                2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+                3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+                4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+                5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
                 ## 可写
 
@@ -181,7 +191,9 @@
                 4. 输出约定（返回值的确切结构和类型）
                 5. 数值约束（容差、秩条件、样本量下限、稳定性提示）
                 6. API（函数签名、参数、默认值）
-                7. 实现说明（来自 profile 的语言约定）
+                7. 实现说明（来自语言包和维护者规范的约定）
+
+                语言包对接口写法有专门要求时（如 Stata 要写完整的 `syntax` 行、全部 e()/r() 返回值和错误码），第 6 项按语言包写。
 
                 **不写**测试用例、特定输入的期望输出、验证策略。
 
@@ -193,7 +205,7 @@
                 4. 回归场景（修 bug 时给出精确复现用例）
                 5. 性质不变式（对称性、幂等性、单调性、收敛性、维度一致性、简单情形的解析解）
                 6. 外部基准（已知正确的实现、论文中的结果、解析解）
-                7. 验证命令（来自 profile）
+                7. 验证命令（来自语言包）；语言包要求写成可执行断言或指定基准命令时照做
                 8. 修改前后对比要看的关键指标（修 bug、改算法、重构时）
 
                 **不写**实现细节、算法步骤、代码结构。容差要有依据（解析误差、数值精度、蒙特卡洛误差），写明理由。
@@ -288,10 +300,20 @@
                 ## 必读
 
                 1. 派发提示给的 request.md、impact.md、spec.md、mailbox.md。
-                2. 语言 profile（编码约定和冒烟检查命令）。
+                2. 语言包和维护者规范（见下节），尤其是其中的编码约定和冒烟检查命令。
                 3. 写入范围内的现有代码，以及受影响函数的调用者和被调用者，弄清项目风格。
 
                 **绝不读**：test-spec.md、sim-spec.md、audit.md、review.md。即使在运行目录里看到它们，也不要打开。
+
+                ## 语言包与维护者规范
+
+                派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+                1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **builder** 一节，以及那一节列出的文件。
+                2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+                3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+                4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+                5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
                 ## 可写
 
@@ -313,7 +335,7 @@
                 任何一项是"是"（第一项为"否"）就 **HOLD**：把具体问题追加到 mailbox.md（类型 HOLD_REQUEST），最后回答以 `HOLD` 开头并列出问题。小的实现选择不必 HOLD，记进 implementation.md。
 
                 **3. 实现**：
-                - 遵循项目已有风格和 profile 的约定。
+                - 遵循项目已有风格、语言包和维护者规范的约定。
                 - 使用前先校验输入；用具名常量代替魔法数字；处理 spec.md 列出的边界情形；迭代算法设最大迭代次数。
                 - 算法步骤和 spec.md 一一对应。
                 - 生产代码里不留调试输出，不在加载时产生副作用。
@@ -410,8 +432,18 @@
                 ## 必读
 
                 1. 派发提示给的 request.md、impact.md、test-spec.md、mailbox.md。
-                2. 语言 profile（验证命令和 Tester Notes）。
+                2. 语言包（验证命令、测试方法、Tester Notes 或"各角色须知"的 tester 一节）。
                 3. 项目里的任何文件都可以读，用来理解当前行为（源码、已有测试、配置），但不读上面禁止的三个规格/产物文件。
+
+                ## 语言包与维护者规范
+
+                派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+                1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **tester** 一节，以及那一节列出的文件。
+                2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+                3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+                4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+                5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
                 ## 可写
 
@@ -436,7 +468,7 @@
 
                 **1. 解析 test-spec.md**：行为约定、测试场景（输入、期望、容差）、边界情形、回归场景、性质不变式、外部基准、修改前后对比要看的指标。
 
-                **2. 跑主验证**：profile 的主验证命令，例如 R `R CMD build . && R CMD check --as-cran <tarball>`（或 `devtools::check()`）和 `devtools::test()`；Python `pytest --tb=short -q`；Stata `stata -b do <master>.do` 并检查 log 中的 `r(###)`；Julia `julia --project -e 'using Pkg; Pkg.test()'`。完整保存输出，按 ERROR / WARNING / NOTE 分类。缺少运行环境（如本机没有 R 或 Stata）时如实写明，结论为 BLOCK，路由给 leader（需要用户安装或提供路径）。
+                **2. 跑主验证**：语言包的主验证命令，例如 R `R CMD build . && R CMD check --as-cran <tarball>`（或 `devtools::check()`）和 `devtools::test()`；Python `pytest --tb=short -q`；Stata 用语言包里的 `run_stata.sh` 运行认证脚本或 `master.do`；Julia `julia --project -e 'using Pkg; Pkg.test()'`。完整保存输出，按 ERROR / WARNING / NOTE 分类。缺少运行环境（如本机没有 R 或 Stata）时如实写明，结论为 BLOCK，路由给 leader（需要用户安装或提供路径）。
 
                 **3. 执行每个测试场景**：在 `tester/` 下写你自己的检查脚本，设种子、构造输入、调用被测功能、与 test-spec.md 的期望比较。结果写进 **Per-Test 结果表**（必需）：
 
@@ -467,10 +499,10 @@
                 4. 可复现检查：至少一个场景用同一种子重跑，结果必须完全相同。
                 5. audit.md 里附完整仿真结果表。
 
-                **6. 示例和文档构建**（如适用）：跑 profile 中的示例或文档构建命令，记录错误和警告。
+                **6. 示例和文档构建**（如适用）：跑语言包中的示例或文档构建命令，记录错误和警告。
 
                 **7. 结论**：
-                - **BLOCK**：主验证有 ERROR 或 WARNING（profile 另有规定的除外）；任何场景失败；数值超出容差；边界行为不符；不变式被违反；必需的验证步骤跑不了。
+                - **BLOCK**：主验证有 ERROR 或 WARNING（语言包另有规定的除外）；任何场景失败；数值超出容差；边界行为不符；不变式被违反；必需的验证步骤跑不了。
                 - **PASS**：以上全部通过。
 
                 **8. 失败路由**（BLOCK 时写进 audit.md 并追加 mailbox.md）：
@@ -562,8 +594,18 @@
                 ## 必读
 
                 1. 派发提示给的 request.md、impact.md、sim-spec.md、mailbox.md。
-                2. 语言 profile；派发提示给的 simulation-study.md。
+                2. 语言包（含仿真写法，如 Stata 的 `simulation.md`）；派发提示给的 simulation-study.md。
                 3. 项目里已有的仿真代码（了解习惯）和估计量的公开接口（只看怎么调用）。
+
+                ## 语言包与维护者规范
+
+                派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+                1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **simulator** 一节，以及那一节列出的文件。
+                2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+                3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+                4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+                5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
                 ## 可写
 
@@ -593,7 +635,7 @@
                 - 错误处理：每次重复都包住，估计量失败就记一次失败（不要悄悄跳过），按场景报告失败率。
                 - 长仿真输出进度（每 10% 一次）。
                 - R 很大时不要把全部原始结果放内存：用累计统计量或分批写盘。
-                - 提供核数参数；遵守 profile 的核数限制（R 包示例和测试最多 2 核）。
+                - 提供核数参数；遵守语言包的核数限制（R 包示例和测试最多 2 核）。
                 - 记录每个场景的耗时。
                 - 提供一个能指定 R 和场景子集的入口，方便冒烟运行，也方便 tester 跑完整版。
 
@@ -711,8 +753,18 @@
                 ## 必读
 
                 1. 派发提示给的全部产物：request.md、impact.md、comprehension.md、spec.md、mailbox.md；代码流程还有 test-spec.md、implementation.md、audit.md；仿真流程还有 sim-spec.md、simulation.md；review.md（如已存在）。
-                2. 语言 profile 的文档约定；派发提示给的 templates 目录（ARCHITECTURE.md、log-entry.md 模板）。
+                2. 语言包的文档约定和模板（如 Stata 的 `helpfile-and-packaging.md`、`templates/helpfile.sthlp`）；派发提示给的 templates 目录（ARCHITECTURE.md、log-entry.md 模板）。
                 3. 写入范围内的现有文档。
+
+                ## 语言包与维护者规范
+
+                派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+                1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **scriber** 一节，以及那一节列出的文件。
+                2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+                3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+                4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+                5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
                 ## 可写
 
@@ -839,7 +891,17 @@
 
                 ## 必读（按顺序）
 
-                request.md → impact.md → comprehension.md → spec.md → test-spec.md（仅文档流程没有）→ sim-spec.md（仅仿真流程）→ implementation.md（仅文档流程由 scriber 写；仅仿真流程没有）→ simulation.md（仅仿真流程）→ audit.md（仅文档流程没有）→ docs.md、log-entry.md、ARCHITECTURE.md → mailbox.md。另读语言 profile；需要时读项目文件和改动（git 项目可用 `git diff <基线>`，基线见 request.md）。
+                request.md → impact.md → comprehension.md → spec.md → test-spec.md（仅文档流程没有）→ sim-spec.md（仅仿真流程）→ implementation.md（仅文档流程由 scriber 写；仅仿真流程没有）→ simulation.md（仅仿真流程）→ audit.md（仅文档流程没有）→ docs.md、log-entry.md、ARCHITECTURE.md → mailbox.md。另读语言包（目录型的读全部 `.md`）和已填写的维护者规范；需要时读项目文件和改动（git 项目可用 `git diff <基线>`，基线见 request.md）。
+
+                ## 语言包与维护者规范
+
+                派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+                1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **reviewer** 一节，以及那一节列出的文件。
+                2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+                3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+                4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+                5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
                 ## 可写
 
@@ -880,6 +942,8 @@
                 4. 隔离：simulation.md 不引用 spec.md / test-spec.md；audit.md 的仿真验证不引用 sim-spec.md；仿真代码没有硬编码 spec.md 的内容。
                 5. 验收标准是否全部评估、是否有蒙特卡洛标准误？有没有刚好卡线的可疑通过、覆盖率恰好等于名义水平？
                 6. 网格里的每个场景是否都跑了？
+
+                **5c. 语言包与维护者规范**：按语言包"各角色须知"的 reviewer 一节（目录型语言包）逐条核对；已填写的维护者规范（跨语言和该语言）逐条核对改动是否遵守。违反 → STOP，路由给负责该文件的角色；规范本身与隔离或容差规则冲突时，以本手册为准，在 review.md 里注明。
 
                 **6. 结构性重构质疑**（拆文件、改名、改分派时）：选代表性输入，分别追踪新旧代码路径，确认行为等价；闭包提升后被捕获的变量是否显式传入；有没有状态泄漏。
 
@@ -925,6 +989,7 @@
                 - [ ] 第 4 步 收敛核对；Per-Test 表完整；需要时有修改前后对比表
                 - [ ] 第 5 步 每条改动路径都有覆盖，断言是正确性级别
                 - [ ] 第 5b 步 仿真六项（仿真流程）
+                - [ ] 第 5c 步 语言包须知与维护者规范
                 - [ ] 第 6 步 重构追踪了至少一条非平凡路径（重构时）
                 - [ ] 第 7 步 tester 的原始证据和场景完整性
                 - [ ] 第 7a 步 全部容差与 test-spec.md 对照，无膨胀

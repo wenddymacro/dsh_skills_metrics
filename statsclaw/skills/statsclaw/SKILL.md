@@ -17,7 +17,8 @@ description: >-
 本 skill 的资源目录（加载时给出的 base directory，下文记作 `<SKILL>`）里有：
 
 - `references/roles/<角色>.md`：六个角色的完整工作手册（planner、builder、tester、simulator、scriber、reviewer）
-- `references/profiles/*.md`：各语言的识别标志、验证命令和编码约定
+- `references/profiles/`：**语言包**。目录型的有完整的约定、验证方法、脚本和模板，入口是 `profile.md`（目前有 `stata/`、`python/`）；其余语言是单个文件（`r-package.md`、`julia-package.md` 等）
+- `references/profiles/maintainer.md` 和各语言目录里的 `maintainer.md`：**维护者规范**（用户自己的习惯，优先级高于语言包）
 - `references/artifacts.md`：运行目录里每个文件该写什么
 - `references/simulation-study.md`：仿真研究的设计要点
 - `templates/`：status.md、log-entry.md、ARCHITECTURE.md 模板
@@ -37,13 +38,16 @@ description: >-
 ## 2. 开工步骤
 
 1. **确定目标项目**：默认是当前工作目录。用户给了别的本地路径就用那个。用户只给了 GitHub 链接时，先问是否 `git clone` 到本地（需要本机能联网和 git）；本插件不读取 GitHub issue，请用户把 issue 内容贴进来。
-2. **识别语言 profile**：按 `references/profiles/` 的标志判断（`DESCRIPTION` → R，`pyproject.toml`/`setup.py` → Python，`*.ado`/`*.do` → Stata，`Project.toml` → Julia，其余见各文件）。多种都符合时看源码数量，仍不确定就问用户。没有匹配就按通用约定做，并告诉用户。
-3. **建运行目录**：`<项目>/.statsclaw/runs/<request-id>/`，request-id 用 `YYYYMMDD-HHMM-<2~4 个英文词的短名>`。第一次在这个项目使用时，同时建 `.statsclaw/context.md`（项目名、profile、常用命令、注意事项）。
+2. **选语言包**：按标志判断（`*.ado`/`*.sthlp`/`*.do` → `profiles/stata/`，`pyproject.toml`/`setup.py` → `profiles/python/`，`DESCRIPTION` → `profiles/r-package.md`，`Project.toml` → `profiles/julia-package.md`，其余见各文件的 Repo Markers）。多种都符合时看源码数量，仍不确定就问用户。没有匹配就按通用约定做，并告诉用户。
+   - 目录型语言包：读它的 `profile.md`，做其中的"开工检查"（如 Stata 运行 `run_stata.sh --version`、确定目标 `version`；Python 确定环境工具），这些是环境检查，你可以自己做。
+   - 读维护者规范：`profiles/maintainer.md` 和该语言目录的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的是空模板，跳过；已填写的，开工时用一句话告诉用户会按它执行。
+   - 规定冲突时的优先级（高 → 低）：项目 `.statsclaw/context.md` > 该语言 `maintainer.md` > 跨语言 `maintainer.md` > 语言包其余文件 > 角色手册的通用做法。隔离规则和容差完整性不受任何规范覆盖。
+3. **建运行目录**：`<项目>/.statsclaw/runs/<request-id>/`，request-id 用 `YYYYMMDD-HHMM-<2~4 个英文词的短名>`。第一次在这个项目使用时，同时建 `.statsclaw/context.md`（项目名、语言包、开工检查的结果、常用命令、项目特有的约定和注意事项；用户说"这个项目以后都要……"时也记在这里）。
 4. **保护工作区**：
    - 项目是 git 仓库时：把 `.statsclaw/` 追加到 `.git/info/exclude`（只影响本机，不改任何受版本控制的文件）；记下基线 `git rev-parse HEAD` 和 `git status --porcelain`。工作区干净时，建议并在用户同意后新建分支 `statsclaw/<request-id>`；不干净时不切分支，只在 request.md 里记下有哪些未提交改动。
    - 不是 git 仓库时：派发编码者之前，把 impact.md 里列出的会被修改的文件复制到运行目录的 `baseline/`，供回滚和"修改前后对比"使用。
-5. **写 `request.md`**：用户原话、范围、验收标准、目标项目路径、profile、基线（commit 或 baseline/）、用户上传的文件路径（论文 PDF、Word、tex、图片等）。
-6. **写 `impact.md`**：此时你可以读项目代码（只在这一步读），列出受影响的文件、风险点、需要的角色，以及**每个写入角色的写入范围**（哪些文件 / 目录它可以改）。写完之后不再读项目源码，后续一切通过角色完成。
+5. **写 `request.md`**：用户原话、范围、验收标准、目标项目路径、语言包、开工检查结果、基线（commit 或 baseline/）、用户上传的文件路径（论文 PDF、Word、tex、图片等）。
+6. **写 `impact.md`**：此时你可以读项目代码（只在这一步读），列出受影响的文件、风险点、需要的角色，以及**每个写入角色的写入范围**（哪些文件 / 目录它可以改；目录型语言包有"写入范围建议"表，按它划分并保证互不重叠）。写完之后不再读项目源码，后续一切通过角色完成。
 7. **写 `status.md`**（模板见 `templates/status.md`），状态 `PLANNED`，然后进入工作流。
 
 ## 3. 选择工作流
@@ -54,14 +58,15 @@ description: >-
 | 2 | 仅文档 | 只改 README、vignette、帮助文件、教程，不碰源码 | planner → scriber（兼实现）→ reviewer |
 | 3 | 仿真 + 代码 | 新估计量并要蒙特卡洛证据 | planner → [builder ∥ simulator] → tester → scriber → reviewer |
 | 4 | 仅仿真 | 对已有估计量做有限样本研究 | planner → simulator → tester → scriber → reviewer |
-| 5 | 仅验证 | "跑一下测试 / 检查能不能过 R CMD check" | tester（你先写一份简短 test-spec.md：要跑的 profile 命令和通过标准） |
+| 5 | 仅验证 | "跑一下测试 / 检查能不能过 R CMD check" | tester（你先写一份简短 test-spec.md：要跑的语言包验证命令和通过标准） |
 | 6 | 仅审查 | "看看这些改动安不安全" | reviewer（读现有改动和能找到的记录） |
 | 7 | 简化 | 小而常规的改动，且用户确认 | builder → tester |
+| 8 | 发布检查 | "能不能发布 / 提交 SSC / 上传 PyPI / 提交 CRAN" | tester（你按语言包的"发布检查"一节写 test-spec.md）→ reviewer |
 
 - 只要改到源码（`.R` `.py` `.ado` `.jl` `.ts` `.go` `.rs` `.c` `.cpp` 等），即使也要改文档，也走 1 或 3；纯文档才走 2。
 - 用户提到仿真、蒙特卡洛、有限样本、DGP、覆盖率、size/power，走 3（要新写估计量）或 4（估计量已存在）。
 - **简化工作流**只在同时满足以下条件时提议：改动不超过 3 个文件；不涉及算法、数值方法或公开 API；没有上传论文或公式；属于改错字、改配置、升版本号、修 import、加个有默认值的参数这类常规改动。提议时用提问工具让用户在"简化（更快）"和"完整流程"之间选；拿不准就问，**不要悄悄降级**。简化流程里 builder 以 request.md 作为规格，tester 是唯一的质量关口；做的过程中发现比预想复杂，立即升级为完整流程。
-- planner 每次都要派（工作流 5、6、7 除外）。用户上传了文件时 planner 必须派，并把**所有**上传文件的路径交给它。
+- planner 每次都要派（工作流 5～8 除外）。用户上传了文件时 planner 必须派，并把**所有**上传文件的路径交给它。
 
 ## 4. 派发角色
 
@@ -69,7 +74,7 @@ description: >-
 
 | 角色 | 交给它 | 绝不交给它 |
 |---|---|---|
-| planner | request.md、impact.md、上传文件、profile | — |
+| planner | request.md、impact.md、上传文件 | — |
 | builder | spec.md | test-spec.md、sim-spec.md、audit.md、review.md |
 | simulator | sim-spec.md | spec.md、test-spec.md、implementation.md、audit.md |
 | tester | test-spec.md（和 simulator 产出的仿真代码位置） | spec.md、sim-spec.md、implementation.md |
@@ -87,7 +92,9 @@ description: >-
 ## 上下文
 - 目标项目：<绝对路径>
 - 运行目录：<绝对路径>/.statsclaw/runs/<request-id>/
-- 语言 profile：<SKILL>/references/profiles/<profile>.md
+- 语言包：<SKILL>/references/profiles/<语言>/profile.md（目录型；读通用部分和"各角色须知"里你的那一节）或 <SKILL>/references/profiles/<profile>.md
+- 维护者规范：<SKILL>/references/profiles/maintainer.md、<SKILL>/references/profiles/<语言>/maintainer.md（只列已填写的）
+- 环境：<开工检查的结果，如 Stata 18 MP、目标 version 16；Python 3.12、uv>
 - 产物格式说明：<SKILL>/references/artifacts.md
 
 ## 任务
@@ -126,7 +133,7 @@ description: >-
 
 中途状态：`HOLD`（等用户回答）、`BLOCKED`（测试失败）、`STOPPED`（审查不通过）。只有你能改 status.md。
 
-**你可以直接做的事**：读写运行目录里的 request.md、impact.md、status.md、test-spec.md（仅工作流 5）；写 impact.md 之前读项目代码；读角色产物；问用户；派发角色；维护 `.statsclaw/` 下的 context.md、CHANGELOG.md、HANDOFF.md；按用户要求做最后的 git 提交。
+**你可以直接做的事**：读写运行目录里的 request.md、impact.md、status.md、test-spec.md（仅工作流 5、8）；写 impact.md 之前读项目代码；做语言包的开工检查；读角色产物；问用户；派发角色；维护 `.statsclaw/` 下的 context.md、CHANGELOG.md、HANDOFF.md；按用户要求做最后的 git 提交。
 
 **你不能做的事**（发现自己要做时，改为派发）：改源码或测试 → builder；跑 R CMD check / pytest / do-file 等验证 → tester；推导公式、写规格 → planner；写 DGP 或仿真脚本 → simulator；写文档 → scriber；判断能否交付 → reviewer。**测试失败时哪怕只差一个字符，也不要自己改**，重派 builder。
 
@@ -140,6 +147,7 @@ description: >-
 
 - 同一角色因同一信号最多重派 3 次，仍失败就转为 HOLD，向用户说明情况。
 - BLOCK 和 STOP 不问用户，自动处理；除 HOLD 外不要在阶段之间停下来问"要不要继续"。
+- 缺依赖（`ssc install`、`install.packages`、`pip install` 等）时**不自动安装**：告诉用户缺哪个、为什么需要，经同意后再装。
 - planner 的 HOLD 最多 3 轮，之后它必须给出 UNDERSTOOD WITH ASSUMPTIONS 或 UNSPECIFIABLE。
 
 ## 7. 进度条
@@ -156,7 +164,7 @@ StatsClaw ▸ 规划 ✓ ▸ 编码 ✓ ▸ 测试 ⟳ ▸ 文档 · ▸ 审查 
 
 1. REVIEW_PASSED 后，在 `.statsclaw/CHANGELOG.md` 追加一行（日期、request-id、一句话摘要、结论），把 log-entry.md 里的"交接说明"更新进 `.statsclaw/HANDOFF.md`。
 2. 向用户汇报：改了哪些文件；关键测试结果（从 audit.md 摘 Per-Test 表的要点，仿真流程摘 Simulation Result 表）；审查结论和 PASS WITH NOTE 的备注；运行目录的位置。
-3. **提交只在用户要求时做**：确认状态为 REVIEW_PASSED 后，只 `git add` 本次写入范围内的文件（不加 `.statsclaw/`），`git commit`，提交说明概括改动。**推送和开 PR 只在用户明确要求、且本机已配置好 git 远程和凭证时做**；推送失败就把错误告诉用户，不要尝试其他办法绕过。
+3. **提交只在用户要求时做**（提交说明、分支、版本号和发布流程按维护者规范）：确认状态为 REVIEW_PASSED 后，只 `git add` 本次写入范围内的文件（不加 `.statsclaw/`），`git commit`，提交说明概括改动。**推送和开 PR 只在用户明确要求、且本机已配置好 git 远程和凭证时做**；推送失败就把错误告诉用户，不要尝试其他办法绕过。
 4. 用户要撤销时：git 仓库用基线 commit 对比后由用户决定是否 `git restore`；非 git 项目从 `baseline/` 复制回去。撤销前先列出会被覆盖的文件，得到同意再做。
 
 ## 9. 串行模式（没有委派工具时）
@@ -174,4 +182,5 @@ StatsClaw ▸ 规划 ✓ ▸ 编码 ✓ ▸ 测试 ⟳ ▸ 文档 · ▸ 审查 
 - **规格隔离**：编码、测试、仿真三条线只看各自规格；三条线独立得到一致结果，才算可信。
 - **容差不可放宽**：测试失败的唯一正确反应是 BLOCK；容差确实不合理时由 planner 修改 test-spec.md 并说明理由。
 - **范围最小**：只改请求需要改的；相邻问题记在 mailbox.md，不顺手修。
+- **用户的规范优先**：维护者规范和项目 context.md 写了的，按它们做；只有隔离规则和容差完整性不让步。
 - **项目保持干净**：运行记录都在 `.statsclaw/`，不进版本控制；ARCHITECTURE.md 默认只放运行目录，用户要求时才复制到项目根目录。

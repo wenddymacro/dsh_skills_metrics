@@ -4,7 +4,7 @@ scriber 写帮助文件、builder 改打包清单、tester 做包装检查时依
 
 ## 1. SMCL 帮助文件骨架
 
-模板在 `templates/helpfile.sthlp`。必备章节和顺序：
+模板在本目录的 `templates/helpfile.sthlp`。必备章节和顺序：
 
 1. `{smcl}` 第一行；`{* *! version 1.0.0  21nov2026}{...}` 版本注释（与 ado 的 `*!` 行一致）
 2. 标题：`{title:Title}` 加 `{phang}{bf:mycmd} {hline 2} 一句话说明{p_end}`
@@ -27,7 +27,7 @@ SMCL 注意事项：
 
 ## 2. 打包清单
 
-**`<pkgname>.pkg`**（模板 `templates/package.pkg`）：
+**`<pkgname>.pkg`**（模板：本目录的 `templates/package.pkg`）：
 
 ```
 v 3

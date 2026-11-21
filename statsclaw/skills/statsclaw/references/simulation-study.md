@@ -1,6 +1,6 @@
 # 仿真研究（蒙特卡洛）要点
 
-供 planner 写 sim-spec.md、simulator 写仿真代码、tester 验证仿真结果、reviewer 审查时参考。
+供 planner 写 sim-spec.md、simulator 写仿真代码、tester 验证仿真结果、reviewer 审查时参考。语言相关的写法见语言包：Stata 见 `profiles/stata/simulation.md`，Python 见 `profiles/python/profile.md` 的 Simulation Notes，R 见 `profiles/r-package.md`。
 
 ## 两种工作流
 

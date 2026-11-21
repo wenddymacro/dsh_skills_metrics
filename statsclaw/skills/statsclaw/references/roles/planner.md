@@ -8,8 +8,18 @@
 
 1. 派发提示给的 request.md、impact.md、mailbox.md。
 2. **用户上传的全部文件**（论文 PDF、Word、tex、txt、带公式的图片），完整读，不要只扫一眼。PDF 用 `pdftotext -layout` 或 Python（`pypdf` / `pdfplumber`）提取；Word 用 `pandoc` 或 `python-docx`；图片用读图工具。提取失败就在 comprehension.md 里说明，并 HOLD 请用户提供文字版。
-3. 语言 profile；impact.md 里列出的现有源码（只读）。
+3. 语言包和维护者规范（见下节）；impact.md 里列出的现有源码（只读）。
 4. 仿真流程还要读派发提示给的 simulation-study.md。
+
+## 语言包与维护者规范
+
+派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **planner** 一节，以及那一节列出的文件。
+2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
 ## 可写
 
@@ -62,7 +72,9 @@ HOLD 时：把问题追加到 mailbox.md（类型 HOLD_REQUEST）和 comprehensi
 4. 输出约定（返回值的确切结构和类型）
 5. 数值约束（容差、秩条件、样本量下限、稳定性提示）
 6. API（函数签名、参数、默认值）
-7. 实现说明（来自 profile 的语言约定）
+7. 实现说明（来自语言包和维护者规范的约定）
+
+语言包对接口写法有专门要求时（如 Stata 要写完整的 `syntax` 行、全部 e()/r() 返回值和错误码），第 6 项按语言包写。
 
 **不写**测试用例、特定输入的期望输出、验证策略。
 
@@ -74,7 +86,7 @@ HOLD 时：把问题追加到 mailbox.md（类型 HOLD_REQUEST）和 comprehensi
 4. 回归场景（修 bug 时给出精确复现用例）
 5. 性质不变式（对称性、幂等性、单调性、收敛性、维度一致性、简单情形的解析解）
 6. 外部基准（已知正确的实现、论文中的结果、解析解）
-7. 验证命令（来自 profile）
+7. 验证命令（来自语言包）；语言包要求写成可执行断言或指定基准命令时照做
 8. 修改前后对比要看的关键指标（修 bug、改算法、重构时）
 
 **不写**实现细节、算法步骤、代码结构。容差要有依据（解析误差、数值精度、蒙特卡洛误差），写明理由。

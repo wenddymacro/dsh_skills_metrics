@@ -7,8 +7,18 @@
 ## 必读
 
 1. 派发提示给的 request.md、impact.md、sim-spec.md、mailbox.md。
-2. 语言 profile；派发提示给的 simulation-study.md。
+2. 语言包（含仿真写法，如 Stata 的 `simulation.md`）；派发提示给的 simulation-study.md。
 3. 项目里已有的仿真代码（了解习惯）和估计量的公开接口（只看怎么调用）。
+
+## 语言包与维护者规范
+
+派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **simulator** 一节，以及那一节列出的文件。
+2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
 ## 可写
 
@@ -38,7 +48,7 @@
 - 错误处理：每次重复都包住，估计量失败就记一次失败（不要悄悄跳过），按场景报告失败率。
 - 长仿真输出进度（每 10% 一次）。
 - R 很大时不要把全部原始结果放内存：用累计统计量或分批写盘。
-- 提供核数参数；遵守 profile 的核数限制（R 包示例和测试最多 2 核）。
+- 提供核数参数；遵守语言包的核数限制（R 包示例和测试最多 2 核）。
 - 记录每个场景的耗时。
 - 提供一个能指定 R 和场景子集的入口，方便冒烟运行，也方便 tester 跑完整版。
 

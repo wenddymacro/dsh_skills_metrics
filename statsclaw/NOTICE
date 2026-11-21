@@ -5,3 +5,9 @@ This plugin is based on, and adapts and extends, StatsClaw by Tianzhu Qin and
 Yiqing Xu (https://github.com/statsclaw/statsclaw, commit 3de2edf), released
 under the MIT License; its licence text is in
 skills/statsclaw/UPSTREAM-LICENSE.txt.
+
+skills/statsclaw/references/profiles/stata/run_stata.sh is shared with the
+statadataanalysis plugin of this repository (same author, MIT License).
+skills/statsclaw/references/profiles/stata/pitfalls.md draws on the
+statadiagnose plugin of this repository, which adapts the /diagnose skill of
+claude-code-my-workflow by Pedro H. C. Sant'Anna (MIT License).

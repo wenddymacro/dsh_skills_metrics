@@ -4,7 +4,7 @@ tester 依据本文件运行检查；planner 写 test-spec.md 时据此给出可
 
 ## 1. 运行 Stata
 
-一律用 skill 自带的 `scripts/run_stata.sh`（路径在派发提示里给出，下文记作 `<RUN>`），**在项目根目录**执行：
+一律用 Stata 语言包里的 `run_stata.sh`（与本文件同目录，即 `<SKILL>/references/profiles/stata/run_stata.sh`，下文记作 `<RUN>`），**在项目根目录**执行：
 
 ```bash
 bash <RUN> --version                 # 本机 Stata 版本
@@ -115,10 +115,10 @@ git archive <基线commit> | tar -x -C <运行目录>/tester/before
 ## 5. 包装检查（命令包）
 
 ```bash
-python3 <SCRIPTS>/stata_pkg_check.py <项目根目录>
+python3 <SKILL>/references/profiles/stata/stata_pkg_check.py <项目根目录>
 ```
 
-`stata_pkg_check.py`（与 run_stata.sh 同目录）静态检查：每个公开 ado 有同名 program 和 `*!` 版本行、program 里有 `version`、有帮助文件、eclass 命令设置了 `e(cmd)`、注释里没有会吞代码的 `/*`、没有写死的 `set seed`、没有 `merge m:m`；`.pkg` 列出的文件都存在、公开命令都被列入；`stata.toc` 指向存在的 pkg。ERROR 视为 BLOCK，WARN 写进 audit.md 由 reviewer 判断。本机没有 Python 时，按同样清单人工检查并注明。
+`stata_pkg_check.py`（与本文件同目录）静态检查：每个公开 ado 有同名 program 和 `*!` 版本行、program 里有 `version`、有帮助文件、eclass 命令设置了 `e(cmd)`、注释里没有会吞代码的 `/*`、没有写死的 `set seed`、没有 `merge m:m`；`.pkg` 列出的文件都存在、公开命令都被列入；`stata.toc` 指向存在的 pkg。ERROR 视为 BLOCK，WARN 写进 audit.md 由 reviewer 判断。本机没有 Python 时，按同样清单人工检查并注明。
 
 然后实际安装一次（不影响本机已装的版本）：
 

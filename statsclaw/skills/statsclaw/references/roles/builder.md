@@ -5,10 +5,20 @@
 ## 必读
 
 1. 派发提示给的 request.md、impact.md、spec.md、mailbox.md。
-2. 语言 profile（编码约定和冒烟检查命令）。
+2. 语言包和维护者规范（见下节），尤其是其中的编码约定和冒烟检查命令。
 3. 写入范围内的现有代码，以及受影响函数的调用者和被调用者，弄清项目风格。
 
 **绝不读**：test-spec.md、sim-spec.md、audit.md、review.md。即使在运行目录里看到它们，也不要打开。
+
+## 语言包与维护者规范
+
+派发提示会给出语言包：一个目录（如 `profiles/stata/`，入口是其中的 `profile.md`），或单个 profile 文件（如 `profiles/r-package.md`）。
+
+1. 读 profile 的通用部分；目录型语言包还要读"各角色须知"里 **builder** 一节，以及那一节列出的文件。
+2. 读派发提示给出的维护者规范：跨语言的 `profiles/maintainer.md` 和该语言目录里的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的文件是空模板，跳过。
+3. 规定冲突时的优先级（高 → 低）：项目的 `.statsclaw/context.md` > 该语言的 `maintainer.md` > 跨语言的 `maintainer.md` > 语言包其余文件 > 本手册的通用做法。
+4. **例外**：本手册的隔离规则（你能读哪些规格）和容差完整性规则，任何规范都不能覆盖；规范与它们冲突时照本手册做，并在 mailbox.md 记一条 NOTE。
+5. 缺依赖时不自动安装（`ssc install`、`install.packages`、`pip install` 等），写明缺什么、为什么需要，交给组长问用户。
 
 ## 可写
 
@@ -30,7 +40,7 @@
 任何一项是"是"（第一项为"否"）就 **HOLD**：把具体问题追加到 mailbox.md（类型 HOLD_REQUEST），最后回答以 `HOLD` 开头并列出问题。小的实现选择不必 HOLD，记进 implementation.md。
 
 **3. 实现**：
-- 遵循项目已有风格和 profile 的约定。
+- 遵循项目已有风格、语言包和维护者规范的约定。
 - 使用前先校验输入；用具名常量代替魔法数字；处理 spec.md 列出的边界情形；迭代算法设最大迭代次数。
 - 算法步骤和 spec.md 一一对应。
 - 生产代码里不留调试输出，不在加载时产生副作用。

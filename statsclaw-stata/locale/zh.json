@@ -1,6 +1,0 @@
-{
-  "meta": {
-    "title": "StatsClaw Stata 版",
-    "description": "添加面向 Stata 包开发的 StatsClaw 多角色团队：组长 preset 调度规划、编码、测试、仿真、文档、审查六个角色，三份规格互相隔离。按规范写 ado / Mata 命令和 r()/e() 返回值，用认证脚本（cscript）对照基准命令独立验证，做蒙特卡洛仿真，写 SMCL 帮助文件，检查 .pkg / stata.toc 打包后再给出能否交付的结论。需要 Stata 16 及以上版本，不需要 GitHub 账号。"
-  }
-}
