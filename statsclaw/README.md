@@ -85,13 +85,13 @@
 **桌面版**：打开「插件 → 添加插件」，填入下面的地址，点击「安装」，再点击「立即启用」。`#` 后面是提交号，下面是目前最新的版本；要装别的版本，换成对应的提交号。
 
 ```text
-github:wenddymacro/dsh_skills_metrics#160e06ab73fe3ab86f0cacee9a6bb94ae226e6f9&path:/statsclaw
+github:wenddymacro/dsh_skills_metrics#d1cf3a3b235e3112375182fb08a73c7a43b5700a&path:/statsclaw
 ```
 
 **命令行**（CLI 管理的 profile）：
 
 ```bash
-dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#160e06ab73fe3ab86f0cacee9a6bb94ae226e6f9&path:/statsclaw"
+dsh plugin --profile <profile> add "github:wenddymacro/dsh_skills_metrics#d1cf3a3b235e3112375182fb08a73c7a43b5700a&path:/statsclaw"
 ```
 
 从本地 checkout 安装（便于开发）：
