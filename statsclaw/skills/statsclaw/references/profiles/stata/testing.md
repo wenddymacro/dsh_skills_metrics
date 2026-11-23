@@ -26,6 +26,7 @@ discard
 ```
 
 - `adopath ++` 让本次运行**优先用项目里的 ado**，而不是本机已安装的旧版本；`discard` 清掉内存里已加载的程序。
+- **先查本机是否装着旧版**：`which <cmd>, all` 和 `ado dir`。有些包会自己去 PLUS 目录或当前目录 `run` 辅助程序（绕过 adopath），这时 `adopath ++` 挡不住旧版。发现本机装有同名包时，测试改在临时 PLUS 目录里进行（`sysdir set PLUS <临时目录>`，见第 5 节），并在 audit.md 里注明。
 - 每个脚本里先 `which <cmd>`，确认找到的是项目里的文件，把输出记进 audit.md。
 - 批处理每次都是新的 Stata 进程，不会继承上一次的状态。
 

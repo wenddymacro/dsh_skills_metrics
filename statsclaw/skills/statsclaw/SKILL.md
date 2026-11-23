@@ -39,6 +39,7 @@ description: >-
 
 1. **确定目标项目**：默认是当前工作目录。用户给了别的本地路径就用那个。用户只给了 GitHub 链接时，先问是否 `git clone` 到本地（需要本机能联网和 git）；本插件不读取 GitHub issue，请用户把 issue 内容贴进来。
 2. **选语言包**：按标志判断（`*.ado`/`*.sthlp`/`*.do` → `profiles/stata/`，`pyproject.toml`/`setup.py` → `profiles/python/`，`DESCRIPTION` → `profiles/r-package.md`，`Project.toml` → `profiles/julia-package.md`，其余见各文件的 Repo Markers）。多种都符合时看源码数量，仍不确定就问用户。没有匹配就按通用约定做，并告诉用户。
+   - **混合语言的包**（如 Stata 命令加 Rust / C 编译插件、R 包加 Rcpp、Python 包加 C 扩展）：按用户可见的接口选**主语言包**，另把内部实现所用语言的 profile 记为**辅助语言包**，一起写进 request.md 和派发提示；tester 两边的验证命令都要跑（如 Stata 认证脚本和 `cargo test`）。
    - 目录型语言包：读它的 `profile.md`，做其中的"开工检查"（如 Stata 运行 `run_stata.sh --version`、确定目标 `version`；Python 确定环境工具），这些是环境检查，你可以自己做。
    - 读维护者规范：`profiles/maintainer.md` 和该语言目录的 `maintainer.md`。第一行仍是 `statsclaw:maintainer-template 未填写` 标记的是空模板，跳过；已填写的，开工时用一句话告诉用户会按它执行。
    - 规定冲突时的优先级（高 → 低）：项目 `.statsclaw/context.md` > 该语言 `maintainer.md` > 跨语言 `maintainer.md` > 语言包其余文件 > 角色手册的通用做法。隔离规则和容差完整性不受任何规范覆盖。
@@ -60,6 +61,7 @@ description: >-
 | 4 | 仅仿真 | 对已有估计量做有限样本研究 | planner → simulator → tester → scriber → reviewer |
 | 5 | 仅验证 | "跑一下测试 / 检查能不能过 R CMD check" | tester（你先写一份简短 test-spec.md：要跑的语言包验证命令和通过标准） |
 | 6 | 仅审查 | "看看这些改动安不安全" | reviewer（读现有改动和能找到的记录） |
+| 5+6 | 体检 | "给这个包做个体检"、第一次接手一个现有包 | tester（你写 test-spec.md：语言包的全部验证命令、静态检查、pitfalls 中能静态判断的条目、测试代码本身是否有断言）→ reviewer；不改任何代码，结果作为以后对比的基线 |
 | 7 | 简化 | 小而常规的改动，且用户确认 | builder → tester |
 | 8 | 发布检查 | "能不能发布 / 提交 SSC / 上传 PyPI / 提交 CRAN" | tester（你按语言包的"发布检查"一节写 test-spec.md）→ reviewer |
 

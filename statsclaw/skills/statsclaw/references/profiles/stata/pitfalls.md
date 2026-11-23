@@ -30,4 +30,4 @@
 | 24 | 版本 | 没写 `version`，新版 Stata 默认行为变化 | program 内写 `version 16`（或项目最低版本） |
 | 25 | 依赖 | SSC 包新旧版本默认值不同（如 reghdfe 6.x 与新版） | 记录 `which` 版本；文档写明要求 |
 | 26 | 编码 | 中文变量名、标签、路径的编码问题 | 测试含中文标签的数据（Stata 14+ 为 UTF-8） |
-| 27 | 环境 | 本机已安装的旧版同名 ado 被优先调用 | 测试脚本开头 `adopath ++ 项目目录`、`discard`，并 `which` 核对 |
+| 27 | 环境 | 本机已安装的旧版同名 ado 被优先调用；包自己从 PLUS 目录或当前目录 `run` 辅助程序，绕过 adopath | 辅助程序靠 adopath 自动加载或 `findfile`；测试脚本开头 `adopath ++ 项目目录`、`discard`、`which <cmd>, all`，本机装有旧版时用临时 PLUS 目录 |
