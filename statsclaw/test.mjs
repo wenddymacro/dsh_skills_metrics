@@ -272,16 +272,52 @@ test('pkg check: silent-error hazards and packaging gaps are reported', PY, (t) 
   const has = (level, file, re) => report.issues.some(i => i.level === level && i.file === file && re.test(i.message))
   assert.ok(has('ERROR', 'other.ado', /no program named other/))
   assert.ok(has('ERROR', 'other.ado', /silently skipped/))
-  assert.ok(has('ERROR', 'other.ado', /no help file/))
+  assert.ok(has('WARN', 'other.ado', /not documented in any help file/))
   assert.ok(has('WARN', 'other.ado', /set seed/))
   assert.ok(has('WARN', 'other.ado', /merge m:m/))
   assert.ok(has('WARN', 'other.ado', /\*! version/))
   assert.ok(has('ERROR', 'bad.pkg', /"v 3"/))
   assert.ok(has('ERROR', 'bad.pkg', /missing\.ado/))
   assert.ok(has('ERROR', 'stata.toc', /ghost/))
-  assert.ok(has('WARN', 'mycmd.sthlp', /differs/))
   assert.ok(has('WARN', 'mycmd.sthlp', /not listed/))
   assert.ok(!report.issues.some(i => i.file === 'mycmd.ado' && i.level === 'ERROR'), 'the clean ado stays clean')
+})
+
+test('pkg check: a trop-like layout is judged by what its help files cover', PY, (t) => {
+  const dir = fixture(t, {
+    'ado/tr.ado': '*! tr -- main command\nprogram define tr, eclass\n    version 17\n    di as txt "tr version 1.2.2"\n    ereturn local cmd "tr"\nend\n',
+    'ado/tr_estat.ado': '*! tr_estat\nprogram tr_estat\n    version 17\nend\n',
+    'ado/tr_estat_vce.ado': 'program tr_estat_vce\n    version 17\nend\n',
+    'ado/tr_predict_te.ado': '*! version 1.0.0\nprogram tr_predict_te\n    version 17\nend\n',
+    'ado/tr_boot.ado': '*! tr_boot\nprogram tr_boot, eclass\n    version 17\nend\n',
+    'ado/tr_helper.ado': '*! tr_helper\nprogram tr_helper\n    version 17\nend\n',
+    'ado/tr.sthlp': '{smcl}\n{* *! version 1.2.2}{...}\n{cmd:tr_boot} runs the bootstrap\n',
+    'ado/tr_estat.sthlp': '{smcl}\n',
+    'ado/tr_predict.sthlp': '{smcl}\n',
+    'tr.pkg': 'v 3\nd Version: 1.2.1\nf ado/tr.ado\nf ado/tr_estat.ado\nf ado/tr_estat_vce.ado\nf ado/tr_predict_te.ado\nf ado/tr_boot.ado\nf ado/tr_helper.ado\nf ado/tr.sthlp\nf ado/tr_estat.sthlp\nf ado/tr_predict.sthlp\ng ancillary/missing.ipynb\n',
+    'README.md': '![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-green.svg)\n',
+  })
+  const { status, report } = lint(dir)
+  const msgs = report.issues.map(i => `${i.level} ${i.file} ${i.message}`)
+  assert.equal(status, 1, msgs.join('\n'))
+  assert.ok(!msgs.some(m => /tr_estat_vce|tr_predict_te|tr_boot/.test(m) && /documented|help file/.test(m)), 'estat/predict subcommands and help-mentioned commands count as documented')
+  assert.ok(msgs.some(m => /^WARN ado\/tr_helper\.ado .*not documented/.test(m)), 'an undocumented helper is a warning')
+  assert.ok(!msgs.some(m => /tr_boot.*e\(cmd\)/.test(m)), 'e(cmd) is only required of the main command')
+  assert.ok(msgs.some(m => /^WARN null package version numbers disagree: 1\.2\.2 .*1\.2\.1 \(tr\.pkg\).*1\.2\.0 \(README\.md\)/.test(m)), msgs.join('\n'))
+  assert.ok(msgs.some(m => /^WARN null 4 ado file\(s\) have a \*! header without a version number/.test(m)), msgs.join('\n'))
+  assert.ok(msgs.some(m => /^WARN ado\/tr_estat_vce\.ado .*header line/.test(m)))
+  assert.ok(msgs.some(m => /^ERROR tr\.pkg lists ancillary\/missing\.ipynb/.test(m)), 'g lines must exist too')
+  assert.ok(!msgs.some(m => /^ERROR/.test(m) && !/missing\.ipynb/.test(m)), msgs.join('\n'))
+})
+
+test('pkg check: the main command needs its own help file', PY, (t) => {
+  const dir = fixture(t, {
+    'mc.ado': '*! version 1.0.0\nprogram mc, eclass\n    version 16\n    ereturn local cmd "mc"\nend\n',
+    'mc.pkg': 'v 3\nf mc.ado\n',
+  })
+  const { status, report } = lint(dir)
+  assert.equal(status, 1)
+  assert.ok(report.issues.some(i => i.level === 'ERROR' && /main command mc has no help file/.test(i.message)))
 })
 
 test('pkg check: eclass without e(cmd) and a missing version statement warn', PY, (t) => {
